@@ -2,7 +2,7 @@
 
 using namespace std;
 
-struct BBC{
+struct B2ECC{
     // Find biconnected components and bridges in undirected graph without parallel edges
     // Time: O(n + m)
     // Space: O(n + m)
@@ -17,7 +17,7 @@ struct BBC{
     stack<int> buffer;
     int vertexCount;
 
-    explicit BBC(const vector<vector<int>>& graph) : graph(graph), vertexCount(graph.size()){
+    explicit B2ECC(const vector<vector<int>>& graph) : graph(graph), vertexCount(graph.size()){
         visited.assign(vertexCount, 0);
         t_up.resize(vertexCount);
         t_in.resize(vertexCount);
@@ -80,7 +80,7 @@ int main(){
         graph[u].emplace_back(v);
         graph[v].emplace_back(u);
     }
-    BBC bridgeFinder(graph);
+    B2ECC bridgeFinder(graph);
     bridgeFinder.findBridgesAndComponents();
     cout << bridgeFinder.biconnectedComponents.size() << endl;
     for (auto& comp : bridgeFinder.biconnectedComponents){
@@ -106,7 +106,7 @@ int main(){
         edgesIndexes[{u, v}] = i + 1;
         edgesIndexes[{v, u}] = i + 1;
     }
-    BBC bridgeFinder(graph);
+    B2ECC bridgeFinder(graph);
     bridgeFinder.findBridgesAndComponents();
     set<int> res;
     for (auto [u,v] : bridgeFinder.bridges)

@@ -20,8 +20,8 @@ struct Node{
 template <class T = int>
 struct SegmentTree{
     // Default segment tree
-    // Time : build - O(n*log(n)) update, query - O(log(n))
-    // Space: build - O(n)        update, query - O(1)
+    // Time : build - O(n) update, query - O(log(n))
+    // Space: build - O(n)  update, query - O(1)
     // Sum segment tree : https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/submission/336262257
     // Find k-th on     : https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/submission/336262107
     vector<Node<T>> tree;

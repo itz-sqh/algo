@@ -3,69 +3,75 @@
 
 using namespace std;
 
-struct SATSolver {
+struct SATSolver{
     // Solves 2-SAT problem using Kosaraju's algorithm for SCC
     // Time: O(n + m) where n is number of variables and m is number of clauses
     // Space: O(n + m)
     // 2 Sat https://judge.yosupo.jp/submission/311202
     int variableCount;
     int vertexCount;
-    vector<vector<int> > graph;
-    vector<vector<int> > reversedGraph;
+    vector<vector<int>> graph;
+    vector<vector<int>> reversedGraph;
     vector<int> component;
     vector<int> order;
     vector<int> visited;
 
-    explicit SATSolver(int variableCount) : variableCount(variableCount), vertexCount(2 * variableCount), graph(vertexCount),
-                                            reversedGraph(vertexCount), component(vertexCount), visited(vertexCount, 0) {
+    explicit SATSolver(int variableCount) : variableCount(variableCount), vertexCount(2 * variableCount),
+                                            graph(vertexCount),
+                                            reversedGraph(vertexCount), component(vertexCount), visited(vertexCount, 0){
         order.reserve(vertexCount);
     }
 
-    int getNode(int var, bool negated) {
+    int getNode(int var, bool negated){
         return negated ? var + variableCount : var;
     }
 
-    void addEdge(int u, int v) {
+    void addEdge(int u, int v){
         graph[u].push_back(v);
         reversedGraph[v].push_back(u);
     }
 
     // One of them is true
-    void addOr(int u, bool negateU, int v, bool negateV) {
+    void addOr(int u, bool negateU, int v, bool negateV){
         addEdge(getNode(u, !negateU), getNode(v, negateV));
         addEdge(getNode(v, !negateV), getNode(u, negateU));
     }
 
     // Only one of them is true
-    void addXor(int u, bool negateU, int v, bool negateV) {
+    void addXor(int u, bool negateU, int v, bool negateV){
         addOr(u, negateU, v, negateV);
         addOr(u, !negateU, v, !negateV);
     }
 
     // Both of them have the same value
-    void addAnd(int u, bool negateU, int v, bool negateV) {
+    void addAnd(int u, bool negateU, int v, bool negateV){
         addXor(u, !negateU, v, negateV);
     }
 
+    // First and second are not true and false respectively
+    void addImpl(int u, bool negateU, int v, bool negateV){
+        addOr(u, !negateU, v, negateV);
+    }
 
-    void dfs(int start) {
+
+    void dfs(int start){
         visited[start] = true;
-        for (int to: graph[start])
+        for (int to : graph[start])
             if (!visited[to])
                 dfs(to);
         order.push_back(start);
     }
 
-    void scc(int start, int id) {
+    void scc(int start, int id){
         visited[start] = true;
         component[start] = id;
 
-        for (int to: reversedGraph[start])
+        for (int to : reversedGraph[start])
             if (!visited[to])
                 scc(to, id);
     }
 
-    vector<int> solve() {
+    vector<int> solve(){
         // Topological sort
         for (int i = 0; i < vertexCount; i++)
             if (!visited[i])
@@ -80,7 +86,7 @@ struct SATSolver {
 
         // Construct the answer
         vector<int> res(variableCount);
-        for (int i = 0; i < variableCount; i++) {
+        for (int i = 0; i < variableCount; i++){
             if (component[i] == component[i + variableCount]) return {};
             res[i] = component[i] > component[i + variableCount];
         }
@@ -89,13 +95,15 @@ struct SATSolver {
 };
 
 
-int main() {
+int main(){
     // Example usage
-    string s; cin >> s >> s;
-    int n, m; cin >> n >> m;
+    string s;
+    cin >> s >> s;
+    int n, m;
+    cin >> n >> m;
 
     SATSolver solver(n);
-    for (int i = 0; i < m; i++) {
+    for (int i = 0; i < m; i++){
         int a, b, zero;
         cin >> a >> b >> zero;
 
@@ -109,15 +117,17 @@ int main() {
 
     vector<int> solution = solver.solve();
 
-    if (solution.empty()) {
+    if (solution.empty()){
         cout << "s UNSATISFIABLE" << endl;
-    } else {
+    }
+    else{
         cout << "s SATISFIABLE" << endl;
         cout << "v ";
-        for (int i = 0; i < n; i++) {
-            if (solution[i]) {
+        for (int i = 0; i < n; i++){
+            if (solution[i]){
                 cout << (i + 1) << " ";
-            } else {
+            }
+            else{
                 cout << -(i + 1) << " ";
             }
         }

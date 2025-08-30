@@ -44,7 +44,7 @@ struct SCC {
             if (!visited[order[i]]) {
                 // Traverse the vertices in reverse topological order, through edges that point into the current vertex
                 // One way to do that is using reversed graph
-                auto dfs_comp = [&](auto&& dfs, int start) -> void {
+                auto dfs = [&](auto&& dfs, int start) -> void {
                     visited[start] = true;
                     components.back().push_back(start);
                     for (int from : reversedGraph[start])
@@ -52,7 +52,7 @@ struct SCC {
                             dfs(dfs, from);
                 };
                 components.emplace_back();
-                dfs_comp(dfs_comp, order[i]);
+                dfs(dfs, order[i]);
             }
         }
         return components;

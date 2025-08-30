@@ -22,7 +22,7 @@ struct CycleFinder {
         from.assign(vertexCount, -1);
     }
 
-    vector<int> getCycle(const vector<int> &from, int lastVertex) {
+    vector<int> getCycle(int lastVertex) {
         cycle.reserve(vertexCount);
         cycle.push_back(lastVertex);
         for (int i = from[lastVertex]; i != lastVertex; i = from[i])
@@ -44,7 +44,7 @@ struct CycleFinder {
             }
             else if (visited[to] == 1) {
                 from[to] = start;
-                cycle = getCycle(from, to);
+                cycle = getCycle(to);
                 return true;
             }
         }

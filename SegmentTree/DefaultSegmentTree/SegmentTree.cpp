@@ -3,14 +3,16 @@
 using namespace std;
 #define int long long
 
+constexpr int INF = 1e12;
+
 template <class T = int>
 struct Node{
     // node for segment tree
     // override everything based on task
     T value;
-    explicit Node(T val) : value(val){}
+    explicit Node(T val) : value(val) {}
     // for default node
-    explicit Node() : value((int)0){}
+    explicit Node() : value(0) {}
     // + - merge nodes
     Node operator+(const Node& other) const{
         return Node{value + other.value};
@@ -22,8 +24,11 @@ struct SegmentTree{
     // Default segment tree
     // Time : build - O(n) update, query - O(log(n))
     // Space: build - O(n)  update, query - O(1)
-    // Sum segment tree : https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/submission/336262257
-    // Find k-th on     : https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/submission/336262107
+    // Static Range Sum    : https://judge.yosupo.jp/submission/311302
+    // Static RMQ          : https://judge.yosupo.jp/submission/311305
+    // Point Add Range Sum : https://judge.yosupo.jp/submission/311307
+    // Sum segment tree    : https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/submission/336262257
+    // Find k-th on        : https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/submission/336262107
     vector<Node<T>> tree;
     int n;
 

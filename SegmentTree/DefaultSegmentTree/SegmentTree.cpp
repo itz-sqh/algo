@@ -28,16 +28,16 @@ struct SegmentTree{
     // Static RMQ          : https://judge.yosupo.jp/submission/311305
     // Point Add Range Sum : https://judge.yosupo.jp/submission/311307
     // Sum segment tree    : https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/submission/336262257
-    // Find k-th on        : https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/submission/336262107
-    vector<Node<T>> tree;
+    // Find k-th one       : https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/submission/336262107
+    unordered_map<int, Node<T>> tree;
     int n;
 
     explicit SegmentTree(const int n) : n(n){
-        tree = vector<Node<T>>(4 * n + 1, Node<T>());
+        tree.reserve(4 * n + 1);
     }
 
     explicit SegmentTree(const vector<T>& a) : n(a.size()){
-        tree = vector<Node<T>>(4 * n + 1, Node<T>());
+        tree.reserve(4 * n + 1);
         init(1, 0, n, a);
     }
 
@@ -46,7 +46,7 @@ struct SegmentTree{
         return update(1, 0, n, ind, val);
     }
 
-    Node<T> query(int ql, int qr) const{
+    Node<T> query(int ql, int qr){
         // [ql, qr) , 0 <= ql,qr < n
         return query(1, 0, n, ql, qr);
     }
@@ -83,7 +83,7 @@ private:
         tree[ind] = tree[2 * ind] + tree[2 * ind + 1];
     }
 
-    Node<T> query(int ind, int l, int r, int ql, int qr) const{
+    Node<T> query(int ind, int l, int r, int ql, int qr){
         if (qr <= l || ql >= r) return Node<T>();
         if (ql <= l && r <= qr) return tree[ind];
         int m = (l + r) / 2;
@@ -92,7 +92,7 @@ private:
         return left + right;
     }
 
-    int find_kth_one(int ind, int l, int r, int k) const{
+    int find_kth_one(int ind, int l, int r, int k) {
         if (l + 1 == r) return l;
         int m = (l + r) / 2;
         int left_count = tree[2 * ind].value;
@@ -100,6 +100,7 @@ private:
         return find_kth_one(2 * ind + 1, m, r, k - left_count);
     }
 };
+
 
 int32_t main(){
     // Example usage

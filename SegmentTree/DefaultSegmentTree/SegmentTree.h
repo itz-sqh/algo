@@ -1,25 +1,46 @@
+#pragma once
+
+
 #include <bits/stdc++.h>
 
-using namespace std;
-#define int long long
 
-constexpr int INF = 1e12;
+using namespace std;
+
 
 template <class T = int>
+
+
 struct Node{
     // node for segment tree
+
+
     // override everything based on task
+
+
     T value;
-    explicit Node(T val) : value(val) {}
+
+
+    explicit Node(T val) : value(val){}
+
+
     // for default node
-    explicit Node() : value(0) {}
+
+
+    explicit Node() : value(0){}
+
+
     // + - merge nodes
+
+
     Node operator+(const Node& other) const{
         return Node{value + other.value};
     }
 };
 
+
 template <class T = int>
+
+
 struct SegmentTree{
     // Default segment tree
     // Time : build - O(n) update, query - O(log(n))
@@ -59,7 +80,6 @@ struct SegmentTree{
         return find_kth_one(1, 0, n, k);
     }
 
-private:
     void init(int ind, int l, int r, const vector<T>& a){
         if (l + 1 == r){
             tree[ind] = Node(a[l]);
@@ -92,7 +112,7 @@ private:
         return left + right;
     }
 
-    int find_kth_one(int ind, int l, int r, int k) {
+    int find_kth_one(int ind, int l, int r, int k){
         if (l + 1 == r) return l;
         int m = (l + r) / 2;
         int left_count = tree[2 * ind].value;
@@ -100,54 +120,3 @@ private:
         return find_kth_one(2 * ind + 1, m, r, k - left_count);
     }
 };
-
-
-int32_t main(){
-    // Example usage
-    /* sum on segment
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    for (auto& el : a)
-        cin >> el;
-    SegmentTree tree(a);
-    while (q--){
-        int op;
-        cin >> op;
-        if (op == 1){
-            int ind, val;
-            cin >> ind >> val;
-            tree.update(ind, val);
-        }
-        if (op == 2){
-            int l, r;
-            cin >> l >> r;
-            cout << tree.query(l, r).value << endl;
-        }
-    }
-    */
-
-    /* k-th one
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    for (auto& el : a)
-        cin >> el;
-    SegmentTree tree(a);
-    while (q--){
-        int op;
-        cin >> op;
-        if (op == 1){
-            int ind;
-            cin >> ind;
-            a[ind] ^= 1;
-            tree.update(ind, a[ind]);
-        }
-        if (op == 2){
-            int k;
-            cin >> k;
-            cout << tree.findKthOne(k) << endl;
-        }
-    }
-    */
-}

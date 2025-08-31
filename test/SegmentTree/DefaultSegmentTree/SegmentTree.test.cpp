@@ -1,10 +1,9 @@
-#include "../SegmentTree/SegmentTree.h"
+#include "../../../SegmentTree/DefaultSegmentTree/SegmentTree.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_sum"
 #define int long long
 
 int32_t main(){
-    // Example usage
-    /* sum on segment*/
+    // Sum on segment
     int n, q;
     cin >> n >> q;
     vector<int> a(n);

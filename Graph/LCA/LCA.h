@@ -13,14 +13,15 @@ struct LCA{
 
     LCA(const vector<vector<int>>& graph, int root) : graph(graph), root(root), maxK(0){
         vertexCount = graph.size();
-        while ((1 << maxK) < vertexCount)
+        while ((1 << maxK) <= vertexCount)
             maxK++;
-        dp.resize(graph.size(), vector(maxK + 1, 0));
+        dp.resize(graph.size(), vector(maxK + 1, -1));
         height.resize(graph.size());
         dfs(root, root, 0);
         for (int k = 1; k <= maxK; k++)
             for (int u = 0; u < vertexCount; u++)
-                dp[u][k] = dp[dp[u][k - 1]][k - 1];
+                if (dp[u][k - 1] != -1)
+                    dp[u][k] = dp[dp[u][k - 1]][k - 1];
     }
 
     void dfs(int current, int parent, int h){
@@ -38,13 +39,14 @@ struct LCA{
         for (int k = maxK; k >= 0; k--)
             if (height[u] <= height[v] - (1 << k))
                 v = dp[v][k];
-        if (u==v) return u;
-        int res = root;
-        for (int k = maxK; k >= 0; k--){
-            if (dp[u][k] != dp[v][k])
-                break;
-            res = dp[u][k];
+        if (u == v) return u;
+
+        for (int k = maxK; k >= 0; k--) {
+            if (dp[u][k] != dp[v][k]) {
+                u = dp[u][k];
+                v = dp[v][k];
+            }
         }
-        return res;
+        return dp[u][0];
     }
 };

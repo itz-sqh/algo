@@ -13,7 +13,7 @@ struct B2ECC{
     vector<int> t_up;
     vector<int> t_in;
     vector<pair<int, int>> bridges;
-    vector<vector<int>> TwoEdgeConnectedComponents;
+    vector<vector<int>> twoEdgeConnectedComponents;
     stack<int> buffer;
     int vertexCount;
 
@@ -40,22 +40,22 @@ struct B2ECC{
         if (t_up[current] == t_in[current] && parent != -1 && seenParent == 1){
             // find bridge, add new component
             bridges.emplace_back(current, parent);
-            TwoEdgeConnectedComponents.emplace_back();
+            twoEdgeConnectedComponents.emplace_back();
             while (true){
                 int u = buffer.top();
                 buffer.pop();
-                TwoEdgeConnectedComponents.back().emplace_back(u);
+                twoEdgeConnectedComponents.back().emplace_back(u);
                 if (u == current)
                     break;
             }
         }
         if (parent == -1 && !buffer.empty()){
             //add component with parent
-            TwoEdgeConnectedComponents.emplace_back();
+            twoEdgeConnectedComponents.emplace_back();
             while (!buffer.empty()){
                 int u = buffer.top();
                 buffer.pop();
-                TwoEdgeConnectedComponents.back().emplace_back(u);
+                twoEdgeConnectedComponents.back().emplace_back(u);
             }
         }
     }

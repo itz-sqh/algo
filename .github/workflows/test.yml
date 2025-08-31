@@ -1,6 +1,6 @@
 name: Verify Code
 
-on: pull_request
+on: [push,pull_request]
 
 jobs:
   set-run-matrix:

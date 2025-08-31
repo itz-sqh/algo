@@ -5,11 +5,10 @@ using namespace std;
 
 struct CycleFinder {
     // Finds any cycle in both directed and undirected graphs
-    // Graph should not contain self-loops or multiple edges
     // Time: O(n + m)
     // Space: O(n + m)
-    // Cycle Detection (Directed) https://judge.yosupo.jp/submission/311123
-    // Cycle Detection (Undirected) https://judge.yosupo.jp/submission/311124
+    // Cycle Detection (Undirected) : https://judge.yosupo.jp/submission/311519
+    // Cycle Detection (Directed)   : https://judge.yosupo.jp/submission/311520
     vector<vector<int>> graph;
     vector<int> visited; // 0: not visited, 1: processing (in stack), 2: finished
     vector<int> cycle;
@@ -17,7 +16,7 @@ struct CycleFinder {
     int vertexCount{};
     bool isDirected;
 
-    CycleFinder(const vector<vector<int> >& graph, bool directed) : graph(graph), isDirected(directed) {
+    CycleFinder(const vector<vector<int>>& graph, bool directed) : graph(graph), isDirected(directed) {
         vertexCount = graph.size();
         visited.assign(vertexCount, 0);
         from.assign(vertexCount, -1);
@@ -34,10 +33,16 @@ struct CycleFinder {
 
     bool dfs(int start, int parent = -1) {
         visited[start] = 1;
-
-        for (int to: graph[start]) {
-            if (!isDirected && to == parent) continue;
-
+        int seenParent = 0;
+        for (int to : graph[start]) {
+            if (!isDirected && to == parent) {
+                if (seenParent) {
+                    cycle = {parent, start};
+                    return true;
+                }
+                seenParent++;
+                continue;
+            }
             if (visited[to] == 0) {
                 from[to] = start;
                 if (dfs(to, start))

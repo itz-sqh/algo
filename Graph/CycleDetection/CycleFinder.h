@@ -3,13 +3,12 @@
 
 using namespace std;
 
-struct CycleFinder{
+struct CycleFinder {
     // Finds any cycle in both directed and undirected graphs
-    // Graph should not contain self-loops or multiple edges
     // Time: O(n + m)
     // Space: O(n + m)
-    // Cycle Detection (Directed) https://judge.yosupo.jp/submission/311123
-    // Cycle Detection (Undirected) https://judge.yosupo.jp/submission/311124
+    // Cycle Detection (Undirected) : https://judge.yosupo.jp/submission/311519
+    // Cycle Detection (Directed)   : https://judge.yosupo.jp/submission/311520
     vector<vector<int>> graph;
     vector<int> visited; // 0: not visited, 1: processing (in stack), 2: finished
     vector<int> cycle;
@@ -17,13 +16,13 @@ struct CycleFinder{
     int vertexCount{};
     bool isDirected;
 
-    CycleFinder(const vector<vector<int>>& graph, bool directed) : graph(graph), isDirected(directed){
+    CycleFinder(const vector<vector<int>>& graph, bool directed) : graph(graph), isDirected(directed) {
         vertexCount = graph.size();
         visited.assign(vertexCount, 0);
         from.assign(vertexCount, -1);
     }
 
-    vector<int> getCycle(int lastVertex){
+    vector<int> getCycle(int lastVertex) {
         cycle.reserve(vertexCount);
         cycle.push_back(lastVertex);
         for (int i = from[lastVertex]; i != lastVertex; i = from[i])
@@ -32,25 +31,24 @@ struct CycleFinder{
         return cycle;
     }
 
-    bool dfs(int start, int parent = -1){
+    bool dfs(int start, int parent = -1) {
         visited[start] = 1;
         int seenParent = 0;
-        for (int to : graph[start]){
-            if (!isDirected && to == parent){
+        for (int to : graph[start]) {
+            if (!isDirected && to == parent) {
+                if (seenParent) {
+                    cycle = {parent, start};
+                    return true;
+                }
                 seenParent++;
-                if (seenParent == 1)
-                    continue;
-                from[to] = start;
-                cycle = getCycle(start);
-                return true;
+                continue;
             }
-
-            if (visited[to] == 0){
+            if (visited[to] == 0) {
                 from[to] = start;
                 if (dfs(to, start))
                     return true;
             }
-            else if (visited[to] == 1){
+            else if (visited[to] == 1) {
                 from[to] = start;
                 cycle = getCycle(to);
                 return true;
@@ -60,7 +58,7 @@ struct CycleFinder{
         return false;
     }
 
-    vector<int> findCycle(){
+    vector<int> findCycle() {
         for (int i = 0; i < vertexCount; i++)
             if (visited[i] == 0)
                 if (dfs(i))

@@ -3,17 +3,17 @@
 using namespace std;
 
 struct B2ECC{
-    // Find biconnected components and bridges in undirected graph without parallel edges
+    // Find 2-edge connected components and bridges in undirected graph
     // Time: O(n + m)
     // Space: O(n + m)
-    // Two-Edge-Connected Components : https://judge.yosupo.jp/submission/311327
-    // Find bridges :
+    // Two-Edge-Connected Components : https://judge.yosupo.jp/submission/311338
+    // Find bridges                  : https://codeforces.com/gym/100083/submission/336317416
     vector<vector<int>> graph;
     vector<int> visited;
     vector<int> t_up;
     vector<int> t_in;
     vector<pair<int, int>> bridges;
-    vector<vector<int>> biconnectedComponents;
+    vector<vector<int>> TwoEdgeConnectedComponents;
     stack<int> buffer;
     int vertexCount;
 
@@ -40,22 +40,22 @@ struct B2ECC{
         if (t_up[current] == t_in[current] && parent != -1 && seenParent == 1){
             // find bridge, add new component
             bridges.emplace_back(current, parent);
-            biconnectedComponents.emplace_back();
+            TwoEdgeConnectedComponents.emplace_back();
             while (true){
                 int u = buffer.top();
                 buffer.pop();
-                biconnectedComponents.back().emplace_back(u);
+                TwoEdgeConnectedComponents.back().emplace_back(u);
                 if (u == current)
                     break;
             }
         }
         if (parent == -1 && !buffer.empty()){
             //add component with parent
-            biconnectedComponents.emplace_back();
+            TwoEdgeConnectedComponents.emplace_back();
             while (!buffer.empty()){
                 int u = buffer.top();
                 buffer.pop();
-                biconnectedComponents.back().emplace_back(u);
+                TwoEdgeConnectedComponents.back().emplace_back(u);
             }
         }
     }
@@ -82,8 +82,8 @@ int main(){
     }
     B2ECC bridgeFinder(graph);
     bridgeFinder.findBridgesAndComponents();
-    cout << bridgeFinder.biconnectedComponents.size() << endl;
-    for (auto& comp : bridgeFinder.biconnectedComponents){
+    cout << bridgeFinder.TwoEdgeConnectedComponents.size() << endl;
+    for (auto& comp : bridgeFinder.TwoEdgeConnectedComponents){
         cout << comp.size() << " ";
         for (auto v : comp)
             cout << v << " ";

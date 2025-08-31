@@ -14,7 +14,7 @@ int main(){
             graph[u].push_back(v);
             edges[{u, v}].push(i);
         }
-        EulerianFinder finder(graph, false);
+        EulerianFinder finder(graph, true);
         auto path = finder.findEulerianPath();
         if (path.size() - 1 != m){
             cout << "No" << endl;

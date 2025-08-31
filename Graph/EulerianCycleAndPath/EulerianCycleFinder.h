@@ -3,8 +3,8 @@
 
 using namespace std;
 
-struct EulerianPathAndCycleFinder{
-    vector<vector<int>> graph;
+struct EulerianFinder{
+    vector<unordered_multiset<int>> graph;
     vector<int> inDegree, outDegree;
     vector<bool> visited;
     vector<int> path;
@@ -12,8 +12,8 @@ struct EulerianPathAndCycleFinder{
     int edgeCount{};
     bool isDirected;
 
-    EulerianPathAndCycleFinder(const vector<vector<int>>& graph, bool directed)
-        : graph(graph), isDirected(directed){
+    EulerianFinder(const vector<vector<int>>& graph, bool directed)
+        :isDirected(directed),graph(graph.size()){
         vertexCount = graph.size();
         inDegree.assign(vertexCount, 0);
         outDegree.assign(vertexCount, 0);

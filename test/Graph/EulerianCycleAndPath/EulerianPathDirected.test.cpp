@@ -27,8 +27,8 @@ int main(){
         for (int i = 0; i < path.size() - 1; i++){
             int u = path[i];
             int v = path[i + 1];
-            cout << edges[{min(u, v), max(u, v)}].top() << " ";
-            edges[{min(u, v), max(u, v)}].pop();
+            cout << edges[{u,v}].top() << " ";
+            edges[{u,v}].pop();
         }
         cout << endl;
     }

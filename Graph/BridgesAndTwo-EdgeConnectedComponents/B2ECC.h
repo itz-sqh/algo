@@ -1,3 +1,4 @@
+#pragma once
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -67,52 +68,3 @@ struct B2ECC{
         }
     }
 };
-
-
-int main(){
-    // Example usage
-    /* Find Two-Edge-Connected Components
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> graph(n);
-    for (int i = 0, u, v; i < m; i++){
-        cin >> u >> v;
-        graph[u].emplace_back(v);
-        graph[v].emplace_back(u);
-    }
-    B2ECC bridgeFinder(graph);
-    bridgeFinder.findBridgesAndComponents();
-    cout << bridgeFinder.TwoEdgeConnectedComponents.size() << endl;
-    for (auto& comp : bridgeFinder.TwoEdgeConnectedComponents){
-        cout << comp.size() << " ";
-        for (auto v : comp)
-            cout << v << " ";
-        cout << endl;
-    }
-    */
-    /*Find bridges
-    ifstream cin("bridges.in");
-    ofstream cout("bridges.out");
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> graph(n);
-    map<pair<int, int>, int> edgesIndexes;
-    for (int i = 0, u, v; i < m; i++){
-        cin >> u >> v;
-        u--;
-        v--;
-        graph[u].emplace_back(v);
-        graph[v].emplace_back(u);
-        edgesIndexes[{u, v}] = i + 1;
-        edgesIndexes[{v, u}] = i + 1;
-    }
-    B2ECC bridgeFinder(graph);
-    bridgeFinder.findBridgesAndComponents();
-    set<int> res;
-    for (auto [u,v] : bridgeFinder.bridges)
-        res.insert(edgesIndexes[{u, v}]);
-    cout << res.size() << endl;
-    for (auto i : res)
-        cout << i << " ";
-    */
-}

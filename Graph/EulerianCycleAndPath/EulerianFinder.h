@@ -4,6 +4,9 @@
 using namespace std;
 
 struct EulerianFinder{
+    //Check for and find Eulerian paths and cycles in directed or undirected graphs with self-loops and parallel edges
+    // Time : check - O(n), find - O(m)   without copy graph [O(n+m)]
+    // Space: check - O(1), find - O(n+m) without copy graph [O(n+m)]
     const vector<vector<int>> mainGraph;
     vector<int> inDegree, outDegree;
     int vertexCount{};

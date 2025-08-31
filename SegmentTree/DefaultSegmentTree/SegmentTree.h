@@ -1,46 +1,23 @@
 #pragma once
-
-
 #include <bits/stdc++.h>
-
 
 using namespace std;
 
-
 template <class T = int>
-
-
 struct Node{
     // node for segment tree
-
-
     // override everything based on task
-
-
     T value;
-
-
     explicit Node(T val) : value(val){}
-
-
     // for default node
-
-
     explicit Node() : value(0){}
-
-
     // + - merge nodes
-
-
     Node operator+(const Node& other) const{
         return Node{value + other.value};
     }
 };
 
-
 template <class T = int>
-
-
 struct SegmentTree{
     // Default segment tree
     // Time : build - O(n) update, query - O(log(n))

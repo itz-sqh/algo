@@ -1,63 +1,83 @@
 #pragma once
 #include <bits/stdc++.h>
-
+#include "../Utils/Edge.h"
 using namespace std;
 
 struct SCC {
     // Finds strongly connected components in a directed graph using Kosaraju's algorithm
     // Time: O(n + m)
     // Space: O(n + m)
-    // Strongly Connected Components https://judge.yosupo.jp/submission/311149
-    vector<vector<int>> graph;
-    vector<vector<int>> reversedGraph;
-    vector<int> order;
-    vector<int> visited;
+    // Strongly Connected Components https://judge.yosupo.jp/submission/311727
+    vector<vector<Edge>> graph;
+    vector<vector<Edge>> reversedGraph;
+    vector<int> comp; // comp[v] - component index for vertex v
+    vector<vector<int>> components;
     int vertexCount{};
 
-    explicit SCC(const vector<vector<int>> &graph) : graph(graph) {
-        vertexCount = graph.size();
-        visited.assign(vertexCount, 0);
-
-        reversedGraph.assign(vertexCount, vector<int>());
-        for (int from = 0; from < vertexCount; from++)
-            for (int to : graph[from])
-                reversedGraph[to].push_back(from);
+    explicit SCC(int vertexCount) : vertexCount(vertexCount) {
+        graph.resize(vertexCount);
+        reversedGraph.resize(vertexCount);
+        comp.resize(vertexCount);
+        components.reserve(vertexCount);
     }
 
-    void dfs(int start) {
-        visited[start] = true;
-        for (int to : graph[start])
-            if (!visited[to])
-                dfs(to);
-        order.push_back(start);
+    void addEdge(int from, int to, int weight = 1) {
+        graph[from].emplace_back(from, to, weight);
+        reversedGraph[to].emplace_back(to, from, weight);
     }
 
     vector<vector<int>> buildComponents() {
-        // Topological sort
+        vector<int> order(vertexCount);
+        vector<int> visited(vertexCount, false);
+        auto topologicalSort = [&](auto&& topSort, int start = 0) -> void {
+            visited[start] = true;
+            for (Edge edge : graph[start])
+                if (!visited[edge.to])
+                    topSort(topSort, edge.to);
+            order.push_back(start);
+        };
         for (int i = 0; i < vertexCount; i++)
             if (!visited[i])
-                dfs(i);
-
-        vector<vector<int>> components;
+                topologicalSort(topologicalSort, i);
 
         visited.assign(vertexCount, false);
+        comp.assign(vertexCount, -1);
+        int compId = 0;
         for (int i = order.size() - 1; i >= 0; i--) {
             if (!visited[order[i]]) {
                 // Traverse the vertices in reverse topological order, through edges that point into the current vertex
                 // One way to do that is using reversed graph
-                auto dfs = [&](auto&& dfs, int start) -> void {
+                auto dfsRev = [&](auto&& dfs, int start) -> void {
                     visited[start] = true;
+                    comp[start] = compId;
                     components.back().push_back(start);
-                    for (int from : reversedGraph[start])
-                        if (!visited[from])
-                            dfs(dfs, from);
+                    for (Edge edge : reversedGraph[start])
+                        if (!visited[edge.to])
+                            dfs(dfs, edge.to);
                 };
                 components.emplace_back();
-                dfs(dfs, order[i]);
+                dfsRev(dfsRev, order[i]);
+                compId++;
             }
         }
         return components;
     }
 
-
+    vector<vector<Edge>> condense() {
+        if (components.empty())
+            buildComponents();
+        int componentCount = components.size();
+        vector<vector<Edge>> condensedGraph(componentCount);
+        vector<unordered_set<int>> usedEdges(componentCount);
+        for (int from = 0; from < vertexCount; from++) {
+            for (Edge edge : graph[from]) {
+                int to = edge.to;
+                if (comp[from] != comp[to] && !usedEdges[comp[from]].count(comp[to])) {
+                    condensedGraph[comp[from]].emplace_back(comp[from], comp[to], edge.weight);
+                    usedEdges[comp[from]].insert(comp[to]);
+                }
+            }
+        }
+        return condensedGraph;
+    }
 };

@@ -1,48 +1,61 @@
 #pragma once
 #include <bits/stdc++.h>
+#include"../Utils/Edge.h"
 
 using namespace std;
 
-struct B2ECC{
+struct B2ECC {
     // Find 2-edge connected components and bridges in undirected graph
     // Time: O(n + m)
     // Space: O(n + m)
     // Two-Edge-Connected Components : https://judge.yosupo.jp/submission/311338
     // Find bridges                  : https://codeforces.com/gym/100083/submission/336317416
-    vector<vector<int>> graph;
+    vector<vector<Edge>> graph;
     vector<int> visited;
-    vector<int> t_up;
-    vector<int> t_in;
-    vector<pair<int, int>> bridges;
+    vector<int> tup;
+    vector<int> tin;
+    vector<Edge> bridges;
     vector<vector<int>> twoEdgeConnectedComponents;
     stack<int> buffer;
     int vertexCount;
 
-    explicit B2ECC(const vector<vector<int>>& graph) : graph(graph), vertexCount(graph.size()){
+    explicit B2ECC(int vertexCount) : vertexCount(vertexCount), graph(vertexCount) {
         visited.assign(vertexCount, 0);
-        t_up.resize(vertexCount);
-        t_in.resize(vertexCount);
+        tup.resize(vertexCount);
+        tin.resize(vertexCount);
     }
 
-    void dfs(int current, int parent = -1, int height = 0){
+    void addEdge(int from, int to, int weight = 1) {
+        graph[from].emplace_back(from, to, weight);
+        graph[to].emplace_back(to, from, weight);
+    }
+
+    void dfs(int current, int parent = -1, int height = 0) {
         int seenParent = 0;
         visited[current] = 1;
-        t_in[current] = t_up[current] = height;
+        tin[current] = tup[current] = height;
         buffer.push(current);
-        for (int to : graph[current]){
-            if (to == parent){
+
+        for (Edge edge : graph[current]) {
+            int to = edge.to;
+            if (to == parent) {
                 seenParent++;
                 continue;
             }
             if (!visited[to])
                 dfs(to, current, height + 1);
-            t_up[current] = min(t_up[current], t_up[to]);
+            tup[current] = min(tup[current], tup[to]);
         }
-        if (t_up[current] == t_in[current] && parent != -1 && seenParent == 1){
+
+        if (tup[current] == tin[current] && parent != -1 && seenParent == 1) {
             // find bridge, add new component
-            bridges.emplace_back(current, parent);
+            Edge bridgeEdge(-1,-1, -1);
+            for (Edge edge : graph[current])
+                if (edge.to == parent)
+                    bridgeEdge = edge;
+            bridges.emplace_back(bridgeEdge);
             twoEdgeConnectedComponents.emplace_back();
-            while (true){
+            while (true) {
                 int u = buffer.top();
                 buffer.pop();
                 twoEdgeConnectedComponents.back().emplace_back(u);
@@ -50,10 +63,11 @@ struct B2ECC{
                     break;
             }
         }
-        if (parent == -1 && !buffer.empty()){
-            //add component with parent
+
+        if (parent == -1 && !buffer.empty()) {
+            // add component with parent
             twoEdgeConnectedComponents.emplace_back();
-            while (!buffer.empty()){
+            while (!buffer.empty()) {
                 int u = buffer.top();
                 buffer.pop();
                 twoEdgeConnectedComponents.back().emplace_back(u);
@@ -61,8 +75,8 @@ struct B2ECC{
         }
     }
 
-    void findBridgesAndComponents(){
-        for (int u = 0; u < vertexCount; u++){
+    void findBridgesAndComponents() {
+        for (int u = 0; u < vertexCount; u++) {
             if (!visited[u])
                 dfs(u);
         }

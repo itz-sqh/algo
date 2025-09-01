@@ -1,24 +1,29 @@
 #include "../../../Graph/BridgesAndTwo-EdgeConnectedComponents/B2ECC.h"
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/3/GRL_3_B"
 
-int main(){
+int main() {
     // Bridges
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     int n, m;
     cin >> n >> m;
-    vector<vector<int>> graph(n);
-    for (int i = 0, u, v; i < m; i++){
+    B2ECC bridgeFinder(n);
+    for (int i = 0; i < m; i++) {
+        int u, v;
         cin >> u >> v;
-        graph[u].emplace_back(v);
-        graph[v].emplace_back(u);
+        bridgeFinder.addEdge(u, v);
     }
-    B2ECC componentsFinder(graph);
-    componentsFinder.findBridgesAndComponents();
-    auto res(componentsFinder.bridges);
-    for (auto& [u,v] : res)
-        if (u > v)
-            swap(u, v);
-    sort(res.begin(), res.end());
-    for (auto [u,v] : res){
-        cout << u << " " << v << endl;
+    bridgeFinder.findBridgesAndComponents();
+    vector<pair<int, int>> bridges;
+    for (const auto& edge : bridgeFinder.bridges) {
+        int u = edge.from;
+        int v = edge.to;
+        if (u > v) swap(u, v);
+        bridges.emplace_back(u, v);
     }
+    sort(bridges.begin(), bridges.end());
+    for (auto& [u,v] : bridges) {
+        cout << u << " " << v << "\n";
+    }
+    return 0;
 }

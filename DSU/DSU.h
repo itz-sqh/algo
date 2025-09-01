@@ -4,9 +4,9 @@
 using namespace std;
 
 struct DSU{
-    //DSU
-    // Time : build - O(n*log(n)), query - O(log(n))
-    // Space: O(n*log(n))
+    // DSU with path compression and union by rank
+    // Time  : O(α(n)) for query [α(n) ~ 1]
+    // Space : O(n)
     vector<int> rank;
     vector<int> parent;
 

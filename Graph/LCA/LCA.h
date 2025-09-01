@@ -4,6 +4,9 @@
 using namespace std;
 
 struct LCA{
+    // LCA with Binary Lifting
+    // Time  : Preprocessing - O(n * log(n)), Query - O(log n)
+    // Space : O(n * log(n))
     const vector<vector<int>> graph;
     int vertexCount;
     const int root;
@@ -41,8 +44,8 @@ struct LCA{
                 v = dp[v][k];
         if (u == v) return u;
 
-        for (int k = maxK; k >= 0; k--) {
-            if (dp[u][k] != dp[v][k]) {
+        for (int k = maxK; k >= 0; k--){
+            if (dp[u][k] != dp[v][k]){
                 u = dp[u][k];
                 v = dp[v][k];
             }

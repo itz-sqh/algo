@@ -1,54 +1,71 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../Utils/Edge.h"
 
 using namespace std;
 
-struct EulerianFinder{
-    //Check for and find Eulerian paths and cycles in directed or undirected graphs with self-loops and parallel edges
+
+struct EulerianFinder {
+    // Check for and find Eulerian paths and cycles in directed or undirected graphs with self-loops and parallel edges
     // Time : check - O(n), find - O(m)   without copy graph [O(n+m)]
     // Space: check - O(1), find - O(n+m) without copy graph [O(n+m)]
-    const vector<vector<int>> mainGraph;
+    vector<vector<Edge>> graph;
     vector<int> inDegree, outDegree;
-    int vertexCount{};
     vector<int> selfLoops;
-    int edgeCount{};
+    int vertexCount{};
     bool isDirected;
+    bool init = false;
+    int idCount = 0;
 
-    EulerianFinder(const vector<vector<int>>& graph, bool directed) : mainGraph(graph), isDirected(directed){
-        vertexCount = graph.size();
+    explicit EulerianFinder(int vertexCount, bool directed) : vertexCount(vertexCount), graph(vertexCount), isDirected(directed) {
         inDegree.assign(vertexCount, 0);
         outDegree.assign(vertexCount, 0);
         selfLoops.assign(vertexCount, 0);
-
-        for (int from = 0; from < vertexCount; from++){
-            for (int to : graph[from]){
-                if (to == from) selfLoops[from]++;
-                outDegree[from]++;
-                inDegree[to]++;
-                edgeCount++;
-            }
-        }
-        if (!isDirected) edgeCount /= 2;
     }
 
-    bool hasEulerianCycle() const{
-        if (isDirected){
+    explicit EulerianFinder(vector<vector<int>> g, bool directed) : vertexCount(g.size()), isDirected(directed) {
+        inDegree.assign(vertexCount, 0);
+        outDegree.assign(vertexCount, 0);
+        selfLoops.assign(vertexCount, 0);
+        for (int from = 0; from < vertexCount; from++)
+            for (int to : g[from])
+                addEdge(from, to);
+    }
+
+    void addEdge(int from, int to, int weight = 1, int index = 0) {
+        int id = idCount++;
+        if (from == to) selfLoops[from]++;
+        graph[from].emplace_back(from, to, weight, index);
+        graph[from].back().id = id;
+        outDegree[from]++;
+        inDegree[to]++;
+        if (!isDirected && from != to) {
+            graph[to].emplace_back(to, from, weight, index);
+            graph[to].back().id = id;
+            outDegree[to]++;
+            inDegree[from]++;
+        }
+    }
+
+
+    bool hasEulerianCycle() {
+        if (isDirected) {
             for (int u = 0; u < vertexCount; u++)
                 if (outDegree[u] != inDegree[u])
                     return false;
         }
-        else{
+        else {
             for (int u = 0; u < vertexCount; u++)
-                if ((mainGraph[u].size() - selfLoops[u]) % 2 == 1)
+                if ((graph[u].size() - selfLoops[u]) % 2 != 0)
                     return false;
         }
         return true;
     }
 
-    bool hasEulerianPath() const{
-        if (isDirected){
+    bool hasEulerianPath() {
+        if (isDirected) {
             int start = 0, end = 0;
-            for (int u = 0; u < vertexCount; u++){
+            for (int u = 0; u < vertexCount; u++) {
                 if (outDegree[u] - inDegree[u] == 1)
                     start++;
                 else if (outDegree[u] - inDegree[u] == -1)
@@ -60,59 +77,59 @@ struct EulerianFinder{
         }
         int cnt = 0;
         for (int u = 0; u < vertexCount; u++)
-            if ((mainGraph[u].size() - selfLoops[u]) % 2 == 1)
+            if ((graph[u].size() - selfLoops[u]) % 2 != 0)
                 cnt++;
         return cnt == 0 || cnt == 2;
     }
 
-    int findStartVertex() const{
+    int findStartVertex() const {
         int start = 0;
-        if (isDirected){
-            for (int u = 0; u < vertexCount; u++){
+        if (isDirected) {
+            for (int u = 0; u < vertexCount; u++) {
                 if (outDegree[u] - inDegree[u] == 1)
                     return u;
                 if (outDegree[u] + inDegree[u] != 0)
                     start = u;
             }
         }
-        else{
-            for (int u = 0; u < vertexCount; u++){
-                if ((mainGraph[u].size() - selfLoops[u]) % 2 == 1)
+        else {
+            for (int u = 0; u < vertexCount; u++) {
+                if ((graph[u].size() - selfLoops[u]) % 2 != 0)
                     return u;
-                if (!mainGraph[u].empty())
+                if (!graph[u].empty())
                     start = u;
             }
         }
         return start;
     }
-
-    void dfs(int u, vector<int>& path, vector<unordered_multiset<int>>& graph){
-        auto& edges = graph[u];
-        while (!edges.empty()){
-            int to = *edges.begin();
-            edges.erase(edges.begin());
-            if (!isDirected)
-                graph[to].erase(graph[to].find(u));
-            dfs(to, path, graph);
+    void dfs(int u, vector<Edge>& path, vector<bool>& used, vector<int>& edgePtr) {
+        while (edgePtr[u] < graph[u].size()) {
+            int idx = edgePtr[u];
+            const Edge& edge = graph[u][idx];
+            if (used[edge.id]) {
+                edgePtr[u]++;
+                continue;
+            }
+            used[edge.id] = true;
+            edgePtr[u]++;
+            dfs(edge.to, path, used, edgePtr);
+            path.push_back(edge);
         }
-        path.push_back(u);
     }
 
-    vector<int> findEulerianPath(){
+    vector<Edge> findEulerianPath() {
         if (!hasEulerianPath())
             return {};
         int start = findStartVertex();
-        vector<int> path;
-        vector<unordered_multiset<int>> copyGraph(vertexCount);
-        for (int from = 0; from < vertexCount; from++)
-            for (int to : mainGraph[from])
-                copyGraph[from].insert(to);
-        dfs(start, path, copyGraph);
+        vector<Edge> path;
+        vector<bool> used(idCount, false);
+        vector<int> edgePtr(vertexCount, 0);
+        dfs(start, path, used, edgePtr);
         reverse(path.begin(), path.end());
         return path;
     }
 
-    vector<int> findEulerianCycle(){
+    vector<Edge> findEulerianCycle() {
         if (!hasEulerianCycle())
             return {};
         return findEulerianPath();

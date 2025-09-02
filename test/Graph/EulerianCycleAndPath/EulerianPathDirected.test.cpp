@@ -1,34 +1,36 @@
 #include "../../../Graph/EulerianCycleAndPath/EulerianFinder.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/eulerian_trail_directed"
 
-int main(){
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     int t;
     cin >> t;
-    while (t--){
+    while (t--) {
         int n, m;
         cin >> n >> m;
-        map<pair<int, int>, stack<int>> edges;
-        vector<vector<int>> graph(n);
-        for (int i = 0, u, v; i < m; i++){
+        EulerianFinder finder(n, true);
+        for (int i = 0, u, v, weight = 1; i < m; i++) {
             cin >> u >> v;
-            graph[u].push_back(v);
-            edges[{u, v}].push(i);
+            finder.addEdge(u, v, weight, i);
         }
-        EulerianFinder finder(graph, true);
+
         auto path = finder.findEulerianPath();
-        if (path.size() - 1 != m){
+        if (path.size() != m) {
             cout << "No" << endl;
             continue;
         }
         cout << "Yes" << endl;
-        for (int u : path)
-            cout << u << " ";
+        if (!path.empty()) {
+            cout << path[0].from << " ";
+            for (Edge edge : path) {
+                cout << edge.to << " ";
+            }
+        }
+        else cout << "0" << endl;
         cout << endl;
-        for (int i = 0; i < path.size() - 1; i++){
-            int u = path[i];
-            int v = path[i + 1];
-            cout << edges[{u,v}].top() << " ";
-            edges[{u,v}].pop();
+        for (Edge edge : path) {
+            cout << edge.index << " ";
         }
         cout << endl;
     }

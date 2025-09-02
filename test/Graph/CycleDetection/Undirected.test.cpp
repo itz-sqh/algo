@@ -2,23 +2,24 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/cycle_detection_undirected"
 
 int main() {
+    // Undirected
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     int n, m;
     cin >> n >> m;
-    vector<vector<int> > graph(n);
+    CycleFinder finder(n, false);
     vector<pair<int, int> > edges;
     for (int i = 0; i < m; i++) {
         int u, v;
         cin >> u >> v;
-        graph[u].push_back(v);
-        if (u != v) graph[v].push_back(u);
+        finder.addEdge(u, v);
         edges.emplace_back(u, v);
     }
 
-    CycleFinder finder(graph, false);
     vector<int> cycle = finder.findCycle();
 
     if (cycle.empty()) {
-        cout << -1 << "\n";
+        cout << -1 << endl;
         return 0;
     }
 
@@ -34,7 +35,7 @@ int main() {
         if (u != v) edgeId[v].push_back(i);
     }
 
-    vector<char> visited(m, 0);
+    vector<int> visited(m, 0);
     vector<int> cycleEdges;
     for (int i = 0; i < cycleSize; i++) {
         int u = cycle[i];

@@ -1,16 +1,17 @@
 #include "../../../Graph/LCA/LCA.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/lca"
 
-int main(){
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     int n, q;
     cin >> n >> q;
-    vector<vector<int>> graph(n);
+    LCA lca(n, 0);
     for (int i = 1, p; i < n; i++){
         cin >> p;
-        graph[p].push_back(i);
-        graph[i].push_back(p);
+        lca.addEdge(p, i);
     }
-    LCA lca(graph, 0);
+
     while (q--){
         int u, v;
         cin >> u >> v;

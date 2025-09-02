@@ -1,8 +1,10 @@
 #include "../../../Graph/2SAT/SATSolver.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/two_sat"
 
-int main(){
+int main() {
     // 2 SAT
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     string s;
     cin >> s >> s;
     int n, m;

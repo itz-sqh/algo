@@ -31,7 +31,7 @@ struct SCC {
         vector<int> visited(vertexCount, false);
         auto topologicalSort = [&](auto&& topSort, int start = 0) -> void {
             visited[start] = true;
-            for (const Edge& edge : graph[start])
+            for (const Edge& edge: graph[start])
                 if (!visited[edge.to])
                     topSort(topSort, edge.to);
             order.push_back(start);
@@ -51,7 +51,7 @@ struct SCC {
                     visited[start] = true;
                     comp[start] = compId;
                     components.back().push_back(start);
-                    for (const Edge& edge : reversedGraph[start])
+                    for (const Edge& edge: reversedGraph[start])
                         if (!visited[edge.to])
                             dfs(dfs, edge.to);
                 };
@@ -70,7 +70,7 @@ struct SCC {
         vector<vector<Edge>> condensedGraph(componentCount);
         vector<unordered_set<int>> usedEdges(componentCount);
         for (int from = 0; from < vertexCount; from++) {
-            for (const Edge& edge : graph[from]) {
+            for (const Edge& edge: graph[from]) {
                 int to = edge.to;
                 if (comp[from] != comp[to] && !usedEdges[comp[from]].count(comp[to])) {
                     condensedGraph[comp[from]].emplace_back(comp[from], comp[to], edge.weight);

@@ -2,13 +2,12 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/cycle_detection_undirected"
 
 int main() {
-    // Undirected
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     int n, m;
     cin >> n >> m;
     CycleFinder finder(n, false);
-    vector<pair<int, int> > edges;
+    vector<pair<int, int>> edges;
     for (int i = 0; i < m; i++) {
         int u, v;
         cin >> u >> v;
@@ -25,14 +24,16 @@ int main() {
 
     int cycleSize = cycle.size();
     cout << cycleSize << "\n";
-    for (int v: cycle) cout << v << " ";
+    for (int v: cycle)
+        cout << v << " ";
     cout << endl;
 
-    vector<vector<int> > edgeId(n);
+    vector<vector<int>> edgeId(n);
     for (int i = 0; i < m; i++) {
         auto [u, v] = edges[i];
         edgeId[u].push_back(i);
-        if (u != v) edgeId[v].push_back(i);
+        if (u != v)
+            edgeId[v].push_back(i);
     }
 
     vector<int> visited(m, 0);
@@ -42,7 +43,8 @@ int main() {
         int v = cycle[(i + 1) % cycleSize];
         int chosen = -1;
         for (int id: edgeId[u]) {
-            if (visited[id]) continue;
+            if (visited[id])
+                continue;
             auto [a,b] = edges[id];
             if ((a == u && b == v) || (a == v && b == u)) {
                 chosen = id;
@@ -53,5 +55,6 @@ int main() {
         cycleEdges.push_back(chosen);
     }
 
-    for (int edge: cycleEdges) cout << edge << " ";
+    for (int edge: cycleEdges)
+        cout << edge << " ";
 }

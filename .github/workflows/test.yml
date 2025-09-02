@@ -1,6 +1,10 @@
 name: Verify Code
 
-on: [pull_request]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   set-run-matrix:
@@ -18,7 +22,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [set-run-matrix]
+    needs: [ set-run-matrix ]
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -40,6 +44,6 @@ jobs:
 
   verify_check:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [ build ]
     steps:
       - run: echo "All tests passed!!"

@@ -23,15 +23,15 @@ int main() {
         cout << "Yes" << endl;
         if (!path.empty()) {
             cout << path[0].from << " ";
-            for (Edge edge : path) {
+            for (const Edge& edge: path)
                 cout << edge.to << " ";
-            }
         }
-        else cout << "0" << endl;
+        else {
+            cout << "0" << endl;
+        }
         cout << endl;
-        for (Edge edge : path) {
+        for (const Edge& edge: path)
             cout << edge.index << " ";
-        }
         cout << endl;
     }
 }

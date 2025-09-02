@@ -2,7 +2,6 @@
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/all/GRL_3_C"
 
 int main() {
-    // SCC
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     int n, m;
@@ -14,11 +13,11 @@ int main() {
         scc.addEdge(u, v);
     }
     auto components = scc.buildComponents();
-    int q; cin >> q;
+    int q;
+    cin >> q;
     while (q--) {
         int u, v;
         cin >> u >> v;
         cout << (scc.comp[u] == scc.comp[v]) << endl;
     }
-
 }

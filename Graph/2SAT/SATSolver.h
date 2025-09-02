@@ -1,8 +1,6 @@
 #pragma once
 #include "../StronglyConnectedComponents/SCC.h"
 
-using namespace std;
-
 struct SATSolver {
     // Solves 2-SAT problem using Kosaraju's algorithm for SCC
     // Time: O(n + m) where n is number of variables and m is number of clauses

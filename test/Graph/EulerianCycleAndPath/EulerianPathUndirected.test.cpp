@@ -1,5 +1,6 @@
 #include "../../../Graph/EulerianCycleAndPath/EulerianFinder.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/eulerian_trail_undirected"
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -23,13 +24,14 @@ int main() {
         cout << "Yes" << endl;
         if (!path.empty()) {
             cout << path[0].from << " ";
-            for (const Edge& edge : path) {
+            for (const Edge& edge: path) {
                 cout << edge.to << " ";
             }
         }
-        else cout << 0 << endl;
+        else
+            cout << 0 << endl;
         cout << endl;
-        for (const Edge& edge : path) {
+        for (const Edge& edge: path) {
             cout << edge.index << " ";
         }
         cout << endl;

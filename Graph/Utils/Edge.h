@@ -11,6 +11,7 @@ struct Edge {
     Edge(int from, int to) : from(from), to(to) {}
     Edge(int from, int to, int weight) : from(from), to(to), weight(weight) {}
     Edge(int from, int to, int weight, int index) : from(from), to(to), weight(weight), index(index) {}
+
     bool operator>(const Edge& other) const {
         return weight > other.weight;
     }

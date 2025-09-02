@@ -16,10 +16,10 @@ struct LCA {
     int maxK;
     bool built;
 
-    LCA(vector<vector<int>> g, int root = 0) : vertexCount(g.size()), root(root) {
+    LCA(const vector<vector<int>>& g, int root = 0) : vertexCount(g.size()), root(root) {
         graph.resize(vertexCount);
         for (int from = 0; from < vertexCount; from++)
-            for (int to : g[from])
+            for (int to: g[from])
                 addEdge(from, to);
         maxK = 0;
         while ((1 << maxK) <= vertexCount)
@@ -31,18 +31,19 @@ struct LCA {
 
     LCA(int vertexCount, int root = 0) : vertexCount(vertexCount), root(root), built(false) {
         graph.resize(vertexCount);
-        maxK = 0;
-        while ((1 << maxK) <= vertexCount)
-            maxK++;
+        maxK = ceil(log2(vertexCount)) + 1;
         dp.resize(vertexCount, vector<int>(maxK + 1, -1));
         height.resize(vertexCount);
     }
+
     void addEdge(int from, int to, int weight = 1) {
         graph[from].emplace_back(from, to, weight);
         graph[to].emplace_back(to, from, weight);
     }
+
     void build() {
-        if (built) return;
+        if (built)
+            return;
         dfs(root, root, 0);
         for (int k = 1; k <= maxK; k++)
             for (int u = 0; u < vertexCount; u++)
@@ -54,19 +55,22 @@ struct LCA {
     void dfs(int current, int parent, int h) {
         dp[current][0] = parent;
         height[current] = h;
-        for (const Edge& edge : graph[current]) {
+        for (const Edge& edge: graph[current]) {
             if (edge.to != parent)
                 dfs(edge.to, current, h + 1);
         }
     }
 
     int get(int u, int v) {
-        if (!built) build();
-        if (height[u] > height[v]) swap(u, v);
+        if (!built)
+            build();
+        if (height[u] > height[v])
+            swap(u, v);
         for (int k = maxK; k >= 0; k--)
             if (height[u] <= height[v] - (1 << k))
                 v = dp[v][k];
-        if (u == v) return u;
+        if (u == v)
+            return u;
 
         for (int k = maxK; k >= 0; k--) {
             if (dp[u][k] != dp[v][k]) {

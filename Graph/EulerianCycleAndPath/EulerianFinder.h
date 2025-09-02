@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 struct EulerianFinder {
     // Check for and find Eulerian paths and cycles in directed or undirected graphs with self-loops and parallel edges
     // Time : check - O(n), find - O(m)   without copy graph [O(n+m)]
@@ -17,24 +16,26 @@ struct EulerianFinder {
     bool init = false;
     int idCount = 0;
 
-    explicit EulerianFinder(int vertexCount, bool directed) : vertexCount(vertexCount), graph(vertexCount), isDirected(directed) {
+    explicit EulerianFinder(int vertexCount, bool directed) : graph(vertexCount), vertexCount(vertexCount),
+                                                              isDirected(directed) {
         inDegree.assign(vertexCount, 0);
         outDegree.assign(vertexCount, 0);
         selfLoops.assign(vertexCount, 0);
     }
 
-    explicit EulerianFinder(vector<vector<int>> g, bool directed) : vertexCount(g.size()), isDirected(directed) {
+    explicit EulerianFinder(const vector<vector<int>>& g, bool directed) : vertexCount(g.size()), isDirected(directed) {
         inDegree.assign(vertexCount, 0);
         outDegree.assign(vertexCount, 0);
         selfLoops.assign(vertexCount, 0);
         for (int from = 0; from < vertexCount; from++)
-            for (int to : g[from])
+            for (int to: g[from])
                 addEdge(from, to);
     }
 
     void addEdge(int from, int to, int weight = 1, int index = 0) {
         int id = idCount++;
-        if (from == to) selfLoops[from]++;
+        if (from == to)
+            selfLoops[from]++;
         graph[from].emplace_back(from, to, weight, index);
         graph[from].back().id = id;
         outDegree[from]++;
@@ -47,8 +48,7 @@ struct EulerianFinder {
         }
     }
 
-
-    bool hasEulerianCycle() {
+    bool hasEulerianCycle() const {
         if (isDirected) {
             for (int u = 0; u < vertexCount; u++)
                 if (outDegree[u] != inDegree[u])
@@ -62,7 +62,7 @@ struct EulerianFinder {
         return true;
     }
 
-    bool hasEulerianPath() {
+    bool hasEulerianPath() const {
         if (isDirected) {
             int start = 0, end = 0;
             for (int u = 0; u < vertexCount; u++) {
@@ -102,6 +102,7 @@ struct EulerianFinder {
         }
         return start;
     }
+
     void dfs(int u, vector<Edge>& path, vector<bool>& used, vector<int>& edgePtr) {
         while (edgePtr[u] < graph[u].size()) {
             int idx = edgePtr[u];

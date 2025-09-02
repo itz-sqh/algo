@@ -7,15 +7,15 @@ int main() {
     int n, q;
     cin >> n;
     LCA lca(n, 0);
-    for (int i = 0, u, k; i < n; i++){
+    for (int i = 0, u, k; i < n; i++) {
         cin >> k;
-        while (k--){
+        while (k--) {
             cin >> u;
             lca.addEdge(u, i);
         }
     }
     cin >> q;
-    while (q--){
+    while (q--) {
         int u, v;
         cin >> u >> v;
         cout << lca.get(u, v) << endl;

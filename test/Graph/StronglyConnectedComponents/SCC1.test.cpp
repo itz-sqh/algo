@@ -2,7 +2,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/scc"
 
 int main() {
-    // SCC
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     int n, m;
@@ -15,9 +14,9 @@ int main() {
     }
     auto components = scc.buildComponents();
     cout << components.size() << endl;
-    for (auto& comp : components){
+    for (auto& comp: components) {
         cout << comp.size() << " ";
-        for (int v : comp){
+        for (int v: comp) {
             cout << v << " ";
         }
         cout << endl;

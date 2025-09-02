@@ -2,7 +2,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/two_sat"
 
 int main() {
-    // 2 SAT
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     string s;
@@ -11,7 +10,7 @@ int main() {
     cin >> n >> m;
 
     SATSolver solver(n);
-    for (int i = 0; i < m; i++){
+    for (int i = 0; i < m; i++) {
         int a, b, zero;
         cin >> a >> b >> zero;
 
@@ -25,17 +24,17 @@ int main() {
 
     vector<int> solution = solver.solve();
 
-    if (solution.empty()){
+    if (solution.empty()) {
         cout << "s UNSATISFIABLE" << endl;
     }
-    else{
+    else {
         cout << "s SATISFIABLE" << endl;
         cout << "v ";
-        for (int i = 0; i < n; i++){
-            if (solution[i]){
+        for (int i = 0; i < n; i++) {
+            if (solution[i]) {
                 cout << (i + 1) << " ";
             }
-            else{
+            else {
                 cout << -(i + 1) << " ";
             }
         }

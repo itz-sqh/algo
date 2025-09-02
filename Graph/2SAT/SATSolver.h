@@ -2,7 +2,6 @@
 #include <bits/stdc++.h>
 #include "../Utils/Edge.h"
 
-
 using namespace std;
 
 struct SATSolver {
@@ -19,8 +18,8 @@ struct SATSolver {
     vector<int> visited;
 
     explicit SATSolver(int variableCount) : variableCount(variableCount), vertexCount(2 * variableCount),
-                                            graph(vertexCount),
-                                            reversedGraph(vertexCount), comp(vertexCount), visited(vertexCount, 0) {
+                                            graph(vertexCount), reversedGraph(vertexCount), comp(vertexCount),
+                                            visited(vertexCount, 0) {
         order.reserve(vertexCount);
     }
 
@@ -57,7 +56,7 @@ struct SATSolver {
 
     void dfs(int start) {
         visited[start] = true;
-        for (Edge edge : graph[start])
+        for (Edge edge: graph[start])
             if (!visited[edge.to])
                 dfs(edge.to);
         order.push_back(start);
@@ -66,7 +65,7 @@ struct SATSolver {
     void scc(int start, int id) {
         visited[start] = true;
         comp[start] = id;
-        for (Edge edge : reversedGraph[start])
+        for (Edge edge: reversedGraph[start])
             if (!visited[edge.to])
                 scc(edge.to, id);
     }
@@ -89,7 +88,8 @@ struct SATSolver {
         // Construct the answer
         vector<int> res(variableCount);
         for (int i = 0; i < variableCount; i++) {
-            if (comp[i] == comp[i + variableCount]) return {};
+            if (comp[i] == comp[i + variableCount])
+                return {};
             res[i] = comp[i] > comp[i + variableCount];
         }
         return res;

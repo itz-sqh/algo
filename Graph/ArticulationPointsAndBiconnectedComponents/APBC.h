@@ -20,20 +20,20 @@ struct APBC {
     stack<int> buffer;
     int vertexCount;
 
-    explicit APBC(int vertexCount) : vertexCount(vertexCount), graph(vertexCount) {
+    explicit APBC(int vertexCount) : graph(vertexCount), vertexCount(vertexCount) {
         visited.resize(vertexCount, 0);
         isArticulationPoint.resize(vertexCount, 0);
         tup.resize(vertexCount);
         tin.resize(vertexCount);
     }
 
-    explicit APBC(vector<vector<int>> g) : vertexCount(g.size()) {
+    explicit APBC(const vector<vector<int>>& g) : vertexCount(g.size()) {
         visited.resize(vertexCount, 0);
         isArticulationPoint.resize(vertexCount, 0);
         tup.resize(vertexCount);
         tin.resize(vertexCount, 0);
         for (int from = 0; from < vertexCount; from++)
-            for (int to : g[from])
+            for (int to: g[from])
                 addEdge(from, to);
     }
 
@@ -47,9 +47,10 @@ struct APBC {
         int children = 0;
         tin[current] = tup[current] = height;
         buffer.push(current);
-        for (const Edge& edge : graph[current]) {
+        for (const Edge& edge: graph[current]) {
             int to = edge.to;
-            if (to == parent) continue;
+            if (to == parent)
+                continue;
             if (!visited[to]) {
                 children++;
                 dfs(to, current, height + 1);
@@ -76,11 +77,12 @@ struct APBC {
             int x = buffer.top();
             buffer.pop();
             comp.push_back(x);
-            if (x == subTreeRoot) return;
+            if (x == subTreeRoot)
+                return;
         }
     }
 
-    void findPointsAndComponents(){
+    void findPointsAndComponents() {
         for (int u = 0; u < vertexCount; u++)
             if (!visited[u])
                 dfs(u);

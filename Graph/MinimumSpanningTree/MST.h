@@ -25,7 +25,7 @@ struct MST {
         vector<Edge> mst;
 
         selected[start] = true;
-        for (Edge edge : graph[start]) {
+        for (const Edge& edge : graph[start]) {
             pq.push(edge);
         }
 
@@ -37,7 +37,7 @@ struct MST {
                 continue;
             selected[to] = true;
             mst.emplace_back(current);
-            for (Edge edge : graph[to])
+            for (const Edge& edge : graph[to])
                 if (!selected[edge.to])
                     pq.push(edge);
         }

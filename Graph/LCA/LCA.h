@@ -16,6 +16,19 @@ struct LCA {
     int maxK;
     bool built;
 
+    LCA(vector<vector<int>> g, int root = 0) : vertexCount(g.size()), root(root) {
+        graph.resize(vertexCount);
+        for (int from = 0; from < vertexCount; from++)
+            for (int to : g[from])
+                addEdge(from, to);
+        maxK = 0;
+        while ((1 << maxK) <= vertexCount)
+            maxK++;
+        dp.resize(vertexCount, vector<int>(maxK + 1, -1));
+        height.resize(vertexCount);
+        build();
+    }
+
     LCA(int vertexCount, int root = 0) : vertexCount(vertexCount), root(root), built(false) {
         graph.resize(vertexCount);
         maxK = 0;
@@ -41,7 +54,7 @@ struct LCA {
     void dfs(int current, int parent, int h) {
         dp[current][0] = parent;
         height[current] = h;
-        for (Edge edge : graph[current]) {
+        for (const Edge& edge : graph[current]) {
             if (edge.to != parent)
                 dfs(edge.to, current, h + 1);
         }

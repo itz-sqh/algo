@@ -24,6 +24,14 @@ struct B2ECC {
         tup.resize(vertexCount);
         tin.resize(vertexCount);
     }
+    explicit B2ECC(vector<vector<int>> g) : vertexCount(g.size()) {
+        visited.assign(vertexCount, 0);
+        tup.resize(vertexCount);
+        tin.resize(vertexCount);
+        for (int from =0; from < vertexCount; from++)
+            for (int to : g[from])
+                addEdge(from, to);
+    }
 
     void addEdge(int from, int to, int weight = 1) {
         graph[from].emplace_back(from, to, weight);
@@ -36,7 +44,7 @@ struct B2ECC {
         tin[current] = tup[current] = height;
         buffer.push(current);
 
-        for (Edge edge : graph[current]) {
+        for (const Edge& edge : graph[current]) {
             int to = edge.to;
             if (to == parent) {
                 seenParent++;
@@ -50,7 +58,7 @@ struct B2ECC {
         if (tup[current] == tin[current] && parent != -1 && seenParent == 1) {
             // find bridge, add new component
             Edge bridgeEdge(-1,-1, -1);
-            for (Edge edge : graph[current])
+            for (const Edge& edge : graph[current])
                 if (edge.to == parent)
                     bridgeEdge = edge;
             bridges.emplace_back(bridgeEdge);

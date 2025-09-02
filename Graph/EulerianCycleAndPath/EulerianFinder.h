@@ -9,7 +9,7 @@ struct EulerianFinder {
     // Check for and find Eulerian paths and cycles in directed or undirected graphs with self-loops and parallel edges
     // Time : check - O(n), find - O(m)   without copy graph [O(n+m)]
     // Space: check - O(1), find - O(n+m) without copy graph [O(n+m)]
-    vector<vector<Edge>> mainGraph;
+    vector<vector<Edge>> graph;
     vector<int> inDegree, outDegree;
     vector<int> selfLoops;
     int vertexCount{};
@@ -17,36 +17,36 @@ struct EulerianFinder {
     bool init = false;
     int idCount = 0;
 
-    EulerianFinder(int vertexCount, bool directed) : vertexCount(vertexCount), mainGraph(vertexCount), isDirected(directed) {
+    explicit EulerianFinder(int vertexCount, bool directed) : vertexCount(vertexCount), graph(vertexCount), isDirected(directed) {
         inDegree.assign(vertexCount, 0);
         outDegree.assign(vertexCount, 0);
         selfLoops.assign(vertexCount, 0);
     }
 
+    explicit EulerianFinder(vector<vector<int>> g, bool directed) : vertexCount(g.size()), isDirected(directed) {
+        inDegree.assign(vertexCount, 0);
+        outDegree.assign(vertexCount, 0);
+        selfLoops.assign(vertexCount, 0);
+        for (int from = 0; from < vertexCount; from++)
+            for (int to : g[from])
+                addEdge(from, to);
+    }
 
     void addEdge(int from, int to, int weight = 1, int index = 0) {
         int id = idCount++;
-        if (from == to) {
-            selfLoops[from]++;
-            mainGraph[from].emplace_back(from, to, weight, index);
-            mainGraph[from].back().id = id;
-        }
-        else {
-            mainGraph[from].emplace_back(from, to, weight, index);
-            mainGraph[from].back().id = id;
-
-            if (!isDirected) {
-                mainGraph[to].emplace_back(to, from, weight, index);
-                mainGraph[to].back().id = id;
-            }
-        }
+        if (from == to) selfLoops[from]++;
+        graph[from].emplace_back(from, to, weight, index);
+        graph[from].back().id = id;
         outDegree[from]++;
         inDegree[to]++;
         if (!isDirected && from != to) {
+            graph[to].emplace_back(to, from, weight, index);
+            graph[to].back().id = id;
             outDegree[to]++;
             inDegree[from]++;
         }
     }
+
 
     bool hasEulerianCycle() {
         if (isDirected) {
@@ -56,7 +56,7 @@ struct EulerianFinder {
         }
         else {
             for (int u = 0; u < vertexCount; u++)
-                if ((mainGraph[u].size() - selfLoops[u]) % 2 != 0)
+                if ((graph[u].size() - selfLoops[u]) % 2 != 0)
                     return false;
         }
         return true;
@@ -77,7 +77,7 @@ struct EulerianFinder {
         }
         int cnt = 0;
         for (int u = 0; u < vertexCount; u++)
-            if ((mainGraph[u].size() - selfLoops[u]) % 2 != 0)
+            if ((graph[u].size() - selfLoops[u]) % 2 != 0)
                 cnt++;
         return cnt == 0 || cnt == 2;
     }
@@ -94,18 +94,18 @@ struct EulerianFinder {
         }
         else {
             for (int u = 0; u < vertexCount; u++) {
-                if ((mainGraph[u].size() - selfLoops[u]) % 2 != 0)
+                if ((graph[u].size() - selfLoops[u]) % 2 != 0)
                     return u;
-                if (!mainGraph[u].empty())
+                if (!graph[u].empty())
                     start = u;
             }
         }
         return start;
     }
     void dfs(int u, vector<Edge>& path, vector<bool>& used, vector<int>& edgePtr) {
-        while (edgePtr[u] < mainGraph[u].size()) {
+        while (edgePtr[u] < graph[u].size()) {
             int idx = edgePtr[u];
-            Edge edge = mainGraph[u][idx];
+            const Edge& edge = graph[u][idx];
             if (used[edge.id]) {
                 edgePtr[u]++;
                 continue;

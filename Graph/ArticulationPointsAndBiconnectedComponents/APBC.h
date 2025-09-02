@@ -27,6 +27,16 @@ struct APBC {
         tin.resize(vertexCount);
     }
 
+    explicit APBC(vector<vector<int>> g) : vertexCount(g.size()) {
+        visited.resize(vertexCount, 0);
+        isArticulationPoint.resize(vertexCount, 0);
+        tup.resize(vertexCount);
+        tin.resize(vertexCount, 0);
+        for (int from = 0; from < vertexCount; from++)
+            for (int to : g[from])
+                addEdge(from, to);
+    }
+
     void addEdge(int from, int to, int weight = 1) {
         graph[from].emplace_back(from, to, weight);
         graph[to].emplace_back(to, from, weight);
@@ -37,7 +47,7 @@ struct APBC {
         int children = 0;
         tin[current] = tup[current] = height;
         buffer.push(current);
-        for (Edge edge : graph[current]) {
+        for (const Edge& edge : graph[current]) {
             int to = edge.to;
             if (to == parent) continue;
             if (!visited[to]) {

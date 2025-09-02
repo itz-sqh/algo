@@ -10,23 +10,32 @@ struct CycleFinder {
     // Space: O(n + m)
     // Cycle Detection (Undirected) : https://judge.yosupo.jp/submission/311519
     // Cycle Detection (Directed)   : https://judge.yosupo.jp/submission/311520
-    vector<vector<Edge>> graph;
+    vector<vector<Edge> > graph;
     vector<int> visited; // 0: not visited, 1: processing (in stack), 2: finished
     vector<int> cycle;
     vector<int> from;
     int vertexCount{};
     bool isDirected;
 
-    CycleFinder(int vertexCount, bool directed) : vertexCount(vertexCount), graph(vertexCount), isDirected(directed) {
+    explicit CycleFinder(int vertexCount, bool directed) : vertexCount(vertexCount), graph(vertexCount),
+                                                           isDirected(directed) {
         vertexCount = graph.size();
         visited.assign(vertexCount, 0);
         from.assign(vertexCount, -1);
     }
 
+    explicit CycleFinder(vector<vector<int>> g, bool directed) : vertexCount(g.size()), isDirected(directed) {
+        visited.assign(vertexCount, 0);
+        from.assign(vertexCount, -1);
+        for (int from = 0; from < vertexCount; from++)
+            for (int to: g[from])
+                addEdge(from, to);
+    }
+
     void addEdge(int from, int to, int weight = 1) {
         graph[from].emplace_back(from, to, weight);
         if (!isDirected)
-            graph[to].emplace_back(to,from, weight);
+            graph[to].emplace_back(to, from, weight);
     }
 
     vector<int> getCycle(int lastVertex) {
@@ -41,7 +50,7 @@ struct CycleFinder {
     bool dfs(int start, int parent = -1) {
         visited[start] = 1;
         int seenParent = 0;
-        for (const Edge& edge : graph[start]) {
+        for (const Edge &edge: graph[start]) {
             int to = edge.to;
             if (!isDirected && to == parent) {
                 if (seenParent) {
@@ -55,8 +64,7 @@ struct CycleFinder {
                 from[to] = start;
                 if (dfs(to, start))
                     return true;
-            }
-            else if (visited[to] == 1) {
+            } else if (visited[to] == 1) {
                 from[to] = start;
                 cycle = getCycle(to);
                 return true;

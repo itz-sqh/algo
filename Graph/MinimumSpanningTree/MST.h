@@ -13,6 +13,7 @@ struct MST {
 
     explicit MST(const int vertexCount) : graph(vertexCount), vertexCount(vertexCount) {}
 
+    // index is optional parameter
     void addEdge(int from, int to, int weight, int index = 0) {
         graph[from].emplace_back(from, to, weight, index);
         graph[to].emplace_back(to, from, weight, index);

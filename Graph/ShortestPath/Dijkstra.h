@@ -4,6 +4,9 @@
 
 using namespace std;
 
+// define to pass tests with huge edge weights
+#define int long long
+
 struct Dijkstra {
     // Finds shortest path in graphs without negative edges
     // Time: O((m + n) * log(n)) can be done in O(n^2) using array instead of heap
@@ -14,7 +17,7 @@ struct Dijkstra {
     vector<Edge> path;
     vector<Edge> from;
     bool isDirected;
-    static constexpr int INF = 1'000'000'000;
+    static constexpr long long INF = 1'000'000'000'000'000;
 
     explicit Dijkstra(int vertexCount, bool directed) :
         vertexCount(vertexCount), graph(vertexCount), distance(vertexCount, INF), from(vertexCount, {-1, -1, -1}),

@@ -1,6 +1,6 @@
 #include "../../../Graph/ShortestPath/Dijkstra.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/shortest_path"
-int main() {
+int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     int n, m, s, t;
@@ -11,7 +11,7 @@ int main() {
         cin >> u >> v >> w;
         dijkstra.addEdge(u, v, w);
     }
-    vector<int> dist = dijkstra.findShortestPaths(s);
+    vector<long long> dist = dijkstra.findShortestPaths(s);
     vector<Edge> path = dijkstra.getPath(t);
 
     if (path.empty()) {

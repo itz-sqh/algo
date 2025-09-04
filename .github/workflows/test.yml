@@ -3,7 +3,8 @@ name: Verify Code
 on:
   pull_request:
     branches: [ master ]
-
+  push:
+    branches: [ master ]
 jobs:
   set-run-matrix:
     runs-on: ubuntu-latest

@@ -1,14 +1,12 @@
-#include "../../../Graph/Heavy-light decomposition/HeavyLightdecomposition.h"
+#include "../../../Graph/HeavyLightDecomposition/HeavyLightdecomposition.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_path_sum"
-#define int long long
-
 
 int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     int n, q;
     cin >> n >> q;
-    vector<int> a(n);
+    vector<long long> a(n);
     for (int i = 0; i < n; i++)
         cin >> a[i];
     vector<vector<int>> graph(n);

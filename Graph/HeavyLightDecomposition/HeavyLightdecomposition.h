@@ -73,7 +73,7 @@ struct HeavyLight {
         tree.update(pos[u], value);
     }
 
-    int query(int u, int v) {
+    long long query(int u, int v) {
         int anc = lca.get(u, v);
         return query_path(u, anc) + query_path(v, anc) - tree.query(pos[anc], pos[anc] + 1);
     }

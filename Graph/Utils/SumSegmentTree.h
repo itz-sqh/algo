@@ -34,17 +34,17 @@ struct SumSegmentTree {
         tree[ind] = tree[2 * ind] + tree[2 * ind + 1];
     }
 
-    void update(int ind, int val) {
+    void update(int ind, long long val) {
         // a[ind] = val, 0 <= ind < n
         return update(1, 0, n, ind, val);
     }
 
-    int query(int ql, int qr) {
+    long long query(int ql, int qr) {
         // [ql, qr) , 0 <= ql,qr < n
         return query(1, 0, n, ql, qr);
     }
 
-    void update(int ind, int l, int r, int i, int val) {
+    void update(int ind, int l, int r, int i, long long val) {
         if (i < l || i >= r)
             return;
         if (l + 1 == r) {
@@ -57,7 +57,7 @@ struct SumSegmentTree {
         tree[ind] = tree[2 * ind] + tree[2 * ind + 1];
     }
 
-    int query(int ind, int l, int r, int ql, int qr) {
+    long long query(int ind, int l, int r, int ql, int qr) {
         if (qr <= l || ql >= r)
             return 0;
         if (ql <= l && r <= qr)

@@ -13,7 +13,11 @@ struct SparseTable {
     int n;
     int logN;
 
-    explicit SparseTable(const vector<int>& a) : n(a.size()) {
+    SparseTable() :
+        n(0), logN(0) {}
+
+    explicit SparseTable(const vector<int>& a) :
+        n(a.size()) {
         logN = ceil(log2(n)) + 1;
         tableMin.assign(n, vector<int>(logN, -1));
         tableMax.assign(n, vector<int>(logN, -1));

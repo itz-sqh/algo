@@ -10,7 +10,7 @@ struct HeavyLight {
     // Time :
     // Space :
     vector<vector<int>> graph;
-    vector<int> val;
+    vector<long long> val;
     int root;
     int n;
     vector<int> parent;
@@ -22,7 +22,7 @@ struct HeavyLight {
     LcAonSparseTable lca;
     SumSegmentTree tree;
 
-    HeavyLight(const vector<vector<int>>& graph, const vector<int>& a, int root) :
+    HeavyLight(const vector<vector<int>>& graph, const vector<long long>& a, int root) :
         graph(graph), val(graph.size()), root(root), n(graph.size()), lca(graph, root), tree(graph.size()) {
         build();
         for (int i = 0; i < n; i++)
@@ -69,7 +69,7 @@ struct HeavyLight {
                 decompose(to, to);
     }
 
-    void update(int u, int value) {
+    void update(int u, long long value) {
         tree.update(pos[u], value);
     }
 
@@ -78,8 +78,8 @@ struct HeavyLight {
         return query_path(u, anc) + query_path(v, anc) - tree.query(pos[anc], pos[anc] + 1);
     }
 
-    int query_path(int u, int v) {
-        int res = 0;
+    long long query_path(int u, int v) {
+        long long res = 0;
         if (depth[head[u]] < depth[head[v]])
             swap(u, v);
         while (head[u] != head[v]) {

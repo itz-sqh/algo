@@ -5,7 +5,7 @@ using namespace std;
 
 struct SumSegmentTree {
     // Default segment tree for sum
-    vector<int> tree;
+    vector<long long> tree;
     int n;
 
     explicit SumSegmentTree(const int n) :
@@ -13,17 +13,17 @@ struct SumSegmentTree {
         tree.resize(4 * n + 1);
     }
 
-    explicit SumSegmentTree(const vector<int>& a) :
+    explicit SumSegmentTree(const vector<long long>& a) :
         n(a.size()) {
         tree.resize(4 * n + 1);
         build(1, 0, n, a);
     }
 
-    void init(const vector<int>& a) {
+    void init(const vector<long long>& a) {
         build(1, 0, n, a);
     }
 
-    void build(int ind, int l, int r, const vector<int>& a) {
+    void build(int ind, int l, int r, const vector<long long>& a) {
         if (l + 1 == r) {
             tree[ind] = a[l];
             return;

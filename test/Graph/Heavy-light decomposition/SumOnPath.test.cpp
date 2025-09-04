@@ -1,7 +1,9 @@
-#include "../../../Graph/Heavy-light decomposition/Heavy-light decomposition.h"
+#include "../../../Graph/Heavy-light decomposition/HeavyLightdecomposition.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_path_sum"
+#define int long long
 
-int main() {
+
+int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     int n, q;
@@ -16,7 +18,7 @@ int main() {
         graph[v].push_back(u);
     }
 
-    HeavyLight decomposition(graph, a,0);
+    HeavyLight decomposition(graph, a, 0);
 
     while (q--) {
         int op;

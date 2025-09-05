@@ -21,14 +21,21 @@ struct FloydWarshall {
             distance[to][from] = min(distance[to][from], weight);
     }
 
-    void build() {
+    bool build() {
+        //if return true there is negative cycle in graph
         for (int i = 0; i < vertexCount; i++)
             distance[i][i] = 0;
         for (int i = 0; i < vertexCount; i++)
             for (int j = 0; j < vertexCount; j++)
                 for (int k = 0; k < vertexCount; k++)
                     if (distance[i][k] < INF && distance[k][j] < INF)
-                        distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j]);
+                        distance[i][j] = max(min(distance[i][j], distance[i][k] + distance[k][j]), -INF);
+
+        for (int i = 0; i < vertexCount; i++)
+            if (distance[i][i] < 0)
+                return true;
+        return false;
+
     }
 
     long long getDistance(int from, int to) const {

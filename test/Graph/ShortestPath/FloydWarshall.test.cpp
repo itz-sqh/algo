@@ -12,7 +12,10 @@ int32_t main() {
         cin >> u >> v >> w;
         floyd.addEdge(u, v, w, true);
     }
-    floyd.build();
+    if (floyd.build()) {
+        cout << "NEGATIVE CYCLE" << endl;
+        return 0;
+    }
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             long long d = floyd.getDistance(i, j);

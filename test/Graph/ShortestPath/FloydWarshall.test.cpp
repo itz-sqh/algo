@@ -16,7 +16,9 @@ int32_t main() {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             long long d = floyd.getDistance(i, j);
-            cout << (d == FloydWarshall::INF ? "INF" : to_string(d)) << " ";
+            cout << (d == FloydWarshall::INF ? "INF" : to_string(d));
+            if (j != n - 1)
+                cout << " ";
         }
         cout << endl;
     }

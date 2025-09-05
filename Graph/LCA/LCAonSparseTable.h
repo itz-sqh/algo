@@ -4,8 +4,8 @@
 
 using namespace std;
 
-struct LcAonSparseTable {
-    // LCA with Binary Lifting
+struct LCAonSparseTable {
+    // LCA with Sparse Table
     // Time  : Preprocessing - O(n * log(n)), Query - O(log n)
     // Space : O(n * log(n))
     vector<vector<int>> graph;
@@ -18,7 +18,7 @@ struct LcAonSparseTable {
     int index;
     SparseTable table;
 
-    LcAonSparseTable(const vector<vector<int>>& graph, int root) :
+    LCAonSparseTable(const vector<vector<int>>& graph, int root) :
         graph(graph), pos(graph.size(), -1), ind(graph.size()), vert(graph.size()), n(graph.size()), root(root) {
         build();
         table = SparseTable(eulerPass);

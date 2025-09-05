@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../Utils/LCAonSparseTable.h"
-#include  "../Utils/SumSegmentTree.h"
+#include "../LCA/LCAonSparseTable.h"
+#include "../../SegmentTree/DefaultSegmentTree/SumSegmentTree.h"
 
 using namespace std;
 
@@ -19,7 +19,7 @@ struct HeavyLight {
     int curPos;
     vector<int> heavyTo;
     vector<int> depth;
-    LcAonSparseTable lca;
+    LCAonSparseTable lca;
     SumSegmentTree tree;
 
     HeavyLight(const vector<vector<int>>& graph, const vector<long long>& a, int root) :

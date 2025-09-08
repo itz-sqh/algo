@@ -1,4 +1,5 @@
-#include "Dijkstra.h"
+#include "Graph/ShortestPath/Dijkstra.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/shortest_path"
 int32_t main() {
     ios_base::sync_with_stdio(false);

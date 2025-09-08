@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "LCAonSparseTable.h"
-#include "SumSegmentTree.h"
+#include "Graph/LCA/LCAonSparseTable.h"
+#include "SegmentTree/DefaultSegmentTree/SumSegmentTree.h"
 
 using namespace std;
 

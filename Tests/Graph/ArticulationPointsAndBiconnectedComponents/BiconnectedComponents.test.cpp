@@ -1,4 +1,5 @@
-#include "APBC.h"
+#include "Graph/ArticulationPointsAndBiconnectedComponents/APBC.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/biconnected_components"
 
 int main() {

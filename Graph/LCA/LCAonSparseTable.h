@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "SparceTable.h"
+#include "SparseTable/SparceTable.h"
 
 using namespace std;
 

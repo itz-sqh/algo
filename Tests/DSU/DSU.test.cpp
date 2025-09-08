@@ -1,4 +1,4 @@
-#include "DSU.h"
+#include "DSU/DSU.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/unionfind"
 
 int main() {

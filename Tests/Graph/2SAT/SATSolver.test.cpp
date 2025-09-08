@@ -1,4 +1,5 @@
-#include "SATSolver.h"
+#include "Graph/2SAT/SATSolver.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/two_sat"
 
 int main() {

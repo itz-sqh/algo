@@ -1,4 +1,5 @@
-#include "MST.h"
+#include "Graph/MinimumSpanningTree/MST.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/minimum_spanning_tree"
 
 int main() {

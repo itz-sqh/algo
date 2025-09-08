@@ -1,4 +1,5 @@
-#include "SCC.h"
+#include "Graph/StronglyConnectedComponents/SCC.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/scc"
 
 int main() {

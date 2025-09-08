@@ -1,4 +1,5 @@
-#include "Dijkstra.h"
+#include "Graph/ShortestPath/Dijkstra.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/all/GRL_1_A"
 int32_t main() {
     ios_base::sync_with_stdio(false);
@@ -11,7 +12,7 @@ int32_t main() {
         cin >> u >> v >> w;
         dijkstra.addEdge(u, v, w);
     }
-    vector<int> dist = dijkstra.findShortestPaths(s);
+    vector<long long> dist = dijkstra.findShortestPaths(s);
     for (auto d: dist) {
         if (d == Dijkstra::INF)
             cout << "INF" << endl;

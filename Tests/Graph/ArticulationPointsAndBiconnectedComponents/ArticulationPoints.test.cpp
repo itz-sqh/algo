@@ -1,4 +1,5 @@
-#include "APBC.h"
+#include "Graph/ArticulationPointsAndBiconnectedComponents/APBC.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/3/GRL_3_A"
 
 int main() {

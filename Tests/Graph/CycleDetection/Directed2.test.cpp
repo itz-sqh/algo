@@ -1,4 +1,5 @@
-#include "CycleFinder.h"
+#include "Graph/CycleDetection/CycleFinder.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/all/GRL_4_A"
 
 int main() {

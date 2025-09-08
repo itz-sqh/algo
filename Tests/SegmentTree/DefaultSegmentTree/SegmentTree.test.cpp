@@ -1,4 +1,5 @@
-#include "SegmentTree.h"
+#include "SegmentTree/DefaultSegmentTree/SegmentTree.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_sum"
 #define int long long
 

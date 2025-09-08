@@ -1,4 +1,5 @@
-#include "FordBellman.h"
+#include "Graph/ShortestPath/FordBellman.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/all/GRL_1_B"
 int32_t main() {
     ios_base::sync_with_stdio(false);

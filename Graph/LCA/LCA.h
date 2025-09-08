@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <cmath>
-#include "Edge.h"
+#include "Graph/Utils/Edge.h"
 
 using namespace std;
 

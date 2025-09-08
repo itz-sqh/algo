@@ -1,9 +1,0 @@
-[config]
-CXX = "g++"
-CXXFLAGS = [
-    "-std=c++23",
-    "-O2",
-    "-Wall",
-    "-I.",
-    "-I$(find DSU Graph NumberTheory Polynomials SegmentTree SparseTable Utils -type d)"
-]

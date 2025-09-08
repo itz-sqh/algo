@@ -1,4 +1,5 @@
-#include "LCAonSparseTable.h"
+#include "Graph/LCA/LCAonSparseTable.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/lca"
 
 int main() {

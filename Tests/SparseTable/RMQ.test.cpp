@@ -1,4 +1,5 @@
-#include "SparceTable.h"
+#include "SparseTable/SparceTable.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/staticrmq"
 
 int main() {

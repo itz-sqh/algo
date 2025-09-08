@@ -1,4 +1,5 @@
-#include "EulerianFinder.h"
+#include "Graph/EulerianCycleAndPath/EulerianFinder.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/eulerian_trail_undirected"
 
 int main() {

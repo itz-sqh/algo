@@ -1,4 +1,5 @@
-#include "CycleFinder.h"
+#include "Graph/CycleDetection/CycleFinder.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/cycle_detection_undirected"
 
 int main() {

@@ -1,4 +1,5 @@
-#include "B2ECC.h"
+#include "Graph/BridgesAndTwo-EdgeConnectedComponents/B2ECC.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/two_edge_connected_components"
 
 int main() {

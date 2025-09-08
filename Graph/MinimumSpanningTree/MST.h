@@ -1,7 +1,7 @@
 #pragma once
 #include <queue>
 #include <vector>
-#include "Edge.h"
+#include "Graph/Utils/Edge.h"
 
 using namespace std;
 

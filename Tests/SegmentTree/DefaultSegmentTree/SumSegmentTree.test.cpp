@@ -1,4 +1,5 @@
-#include "SumSegmentTree.h"
+#include "SegmentTree/DefaultSegmentTree/SumSegmentTree.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_sum"
 
 int32_t main() {

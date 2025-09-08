@@ -1,4 +1,5 @@
-#include "LCA.h"
+#include "Graph/LCA/LCA.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/all/GRL_5_C"
 
 int main() {

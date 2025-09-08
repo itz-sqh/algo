@@ -1,4 +1,5 @@
-#include "HeavyLightdecomposition.h"
+#include "Graph/HeavyLightDecomposition/HeavyLightdecomposition.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_path_sum"
 
 int32_t main() {

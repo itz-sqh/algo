@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <algorithm>
-#include "Edge.h"
+#include "Graph/Utils/Edge.h"
 
 using namespace std;
 

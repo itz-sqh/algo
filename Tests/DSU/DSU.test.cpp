@@ -1,4 +1,5 @@
 #include "DSU/DSU.h"
+#include <bits/stdc++.h>
 #define PROBLEM "https://judge.yosupo.jp/problem/unionfind"
 
 int main() {

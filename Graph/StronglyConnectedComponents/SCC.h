@@ -1,6 +1,7 @@
 #pragma once
-#include <bits/stdc++.h>
-#include "../Utils/Edge.h"
+#include <vector>
+#include <unordered_set>
+#include "Edge.h"
 using namespace std;
 
 struct SCC {

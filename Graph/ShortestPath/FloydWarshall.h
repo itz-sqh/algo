@@ -1,6 +1,5 @@
 #pragma once
-#include <bits/stdc++.h>
-#include "../Utils/Edge.h"
+#include <vector>
 
 using namespace std;
 

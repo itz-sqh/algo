@@ -1,6 +1,6 @@
 #pragma once
-#include <bits/stdc++.h>
-#include "../../SparseTable/SparceTable.h"
+#include <vector>
+#include "SparceTable.h"
 
 using namespace std;
 
@@ -42,7 +42,7 @@ struct LCAonSparseTable {
         }
     }
 
-    int get(int u, int v) {
+    int get(int u, int v) const {
         int l = pos[u], r = pos[v];
         if (l > r)
             swap(l, r);

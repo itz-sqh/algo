@@ -1,5 +1,5 @@
 #pragma once
-#include "../StronglyConnectedComponents/SCC.h"
+#include "SCC.h"
 
 struct SATSolver {
     // Solves 2-SAT problem using Kosaraju's algorithm for SCC

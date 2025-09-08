@@ -1,11 +1,10 @@
 #pragma once
-#include <bits/stdc++.h>
-#include "../Utils/Edge.h"
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include "Edge.h"
 
 using namespace std;
-
-// define to pass tests with huge edge weights
-#define int long long
 
 struct Dijkstra {
     // Finds shortest path in graphs without negative edges
@@ -13,7 +12,7 @@ struct Dijkstra {
     // Space: O(m + n)
     int vertexCount;
     vector<vector<Edge>> graph;
-    vector<int> distance;
+    vector<long long> distance;
     vector<Edge> path;
     vector<Edge> from;
     bool isDirected;
@@ -23,14 +22,14 @@ struct Dijkstra {
         vertexCount(vertexCount), graph(vertexCount), distance(vertexCount, INF), from(vertexCount, {-1, -1, -1}),
         isDirected(directed) {}
 
-    void addEdge(int from, int to, int weight) {
+    void addEdge(int from, int to, long long weight) {
         graph[from].emplace_back(from, to, weight);
         if (!isDirected)
             graph[to].emplace_back(to, from, weight);
     }
 
-    vector<int> findShortestPaths(int start) {
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    vector<long long> findShortestPaths(int start) {
+        priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;
         distance.assign(vertexCount, INF);
         from.assign(vertexCount, {-1, -1, -1});
         distance[start] = 0;
@@ -38,7 +37,7 @@ struct Dijkstra {
 
         while (!pq.empty()) {
             int current = pq.top().second;
-            int dist = pq.top().first;
+            long long dist = pq.top().first;
             pq.pop();
             if (dist != distance[current])
                 continue;

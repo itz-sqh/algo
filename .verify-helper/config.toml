@@ -5,11 +5,5 @@ CXXFLAGS = [
     "-O2",
     "-Wall",
     "-I.",
-    "-IDSU/**",
-    "-IGraph/**",
-    "-INumberTheory/**",
-    "-IPolynomials/**",
-    "-ISegmentTree/**",
-    "-ISparseTable/**",
-    "-IUtils/**"
+    "-I$(find DSU Graph NumberTheory Polynomials SegmentTree SparseTable Utils -type d)"
 ]

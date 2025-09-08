@@ -11,7 +11,7 @@ using namespace std;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int n, m;
+    long long n, m;
     cin >> n >> m;
     vector<mint> a(n);
     for (auto& x: a)

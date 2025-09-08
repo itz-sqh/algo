@@ -128,7 +128,7 @@ namespace fft {
             return 0;
         }
         size_t k = n + m - 1;
-        while (popcount(k) != 1) {
+        while (__builtin_popcount(k) != 1) {
             k++;
         }
         return k;

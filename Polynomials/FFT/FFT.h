@@ -11,7 +11,7 @@ namespace fft {
     // Space : O(n)
     using namespace std;
 
-    constexpr int maxn = 1 << 20; // must be 2^k
+    constexpr int maxn = 1 << 21; // must be 2^k
     constexpr int naiveThreshold = 50; // Threshold to use naive algorithm
     typedef long double ftype; // use regular double if you need less precision
     typedef complex<ftype> point;

@@ -16,7 +16,7 @@ int main() {
     vector<mint> a(n), b(m);
     for (auto& x :a) cin >> x;
     for (auto& x : b) cin >> x;
-    fft::mul(a, b);
+    fft::mul<mint, long double>(a, b);
     for (int i = 0; i < n + m - 1; i++) {
         cout << a[i] << " ";
     }

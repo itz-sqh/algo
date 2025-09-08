@@ -4,7 +4,7 @@
 #include "NumberTheory/Factorials/Factrorial.h"
 #include "Polynomials/FFT/FFT.h"
 
-template <typename Modint>
+template <typename Modint, typename ftype = double>
 class ModintPolynomial {
 private:
     std::vector<Modint> coefficients;
@@ -71,7 +71,7 @@ public:
             coefficients.clear();
             return *this;
         }
-        fft::mul(coefficients, other.coefficients);
+        fft::mul<Modint, ftype>(coefficients, other.coefficients);
         normalize();
         return *this;
     }

@@ -5,7 +5,7 @@
 constexpr long long MOD = 998244353;
 
 using mint = Modint<MOD>;
-using polynom = ModintPolynomial<mint>;
+using polynom = ModintPolynomial<mint, double>;
 using namespace std;
 
 int main() {

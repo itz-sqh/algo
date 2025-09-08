@@ -4,24 +4,24 @@
 #include <cassert>
 #include <complex>
 #include <vector>
+using namespace std;
 
-namespace fft {
-    // Implements fft using complex numbers
-    // Time : O(n * log(n))
-    // Space : O(n)
-    using namespace std;
+// Implements fft using complex numbers
+// Time : O(n * log(n))
+// Space : O(n)
 
-    constexpr int maxn = 1 << 20; // must be power of 2
-    constexpr int naiveThreshold = 50; // Threshold to use naive algorithm
-    typedef long double ftype; // use regular double if you need less precision
+template <typename ftype>
+struct FFT {
+    static constexpr int maxn = 1 << 20;      // must be power of 2
+    static constexpr int naiveThreshold = 50; // Threshold to use naive algorithm
+
     typedef complex<ftype> point;
-    const ftype pi = acosl(-1);
+    static constexpr ftype pi = acosl(-1);
+    inline static point w[maxn];  // w[2^n + k] = exp(pi * k / (2^n))
+    inline static int bitr[maxn]; // b[2^n + k] = bitreverse(k)
+    inline static bool initiated;
 
-    inline point w[maxn];  // w[2^n + k] = exp(pi * k / (2^n))
-    inline int bitr[maxn]; // b[2^n + k] = bitreverse(k)
-    inline bool initiated = false;
-
-    inline void init() {
+    static void init() {
         if (!initiated) {
             for (int i = 1; i < maxn; i *= 2) {
                 int ti = i / 2;
@@ -35,8 +35,7 @@ namespace fft {
             initiated = true;
         }
     }
-
-    inline void fft(vector<point>& a, int n) {
+    static void fft(vector<point>& a, int n) {
         init();
         if (n == 1) {
             return;
@@ -59,8 +58,8 @@ namespace fft {
         }
     }
 
-    template<typename Mint>
-    void mulNaive(vector<Mint>& a, const vector<Mint>& b) {
+    template <typename Mint>
+    static void mulNaive(vector<Mint>& a, const vector<Mint>& b) {
         if (a.empty() || b.empty()) {
             a.clear();
             return;
@@ -77,52 +76,54 @@ namespace fft {
             }
         }
     }
+};
 
-    template<typename Mint>
-    struct dft {
-        static constexpr int split = 1 << 15; // ~ sqrt(mod)
-        vector<point> A;
+template <typename Mint, typename ftype>
+struct DFT {
+    typedef complex<ftype> point;
+    static constexpr int split = 1 << 15; // ~ sqrt(mod)
+    vector<point> A;
 
-        dft(const vector<Mint>& a, size_t n) : A(n) {
-            for (size_t i = 0; i < min(n, a.size()); i++) {
-                A[i] = point(a[i].rem() % split, a[i].rem() / split);
-            }
-            fft(A, static_cast<int>(n));
+    DFT(const vector<Mint>& a, size_t n) : A(n) {
+        for (size_t i = 0; i < min(n, a.size()); i++) {
+            A[i] = point(a[i].rem() % split, a[i].rem() / split);
+        }
+        FFT<ftype>::fft(A, static_cast<int>(n));
+    }
+
+    vector<Mint> operator*(const DFT& B) const {
+        assert(A.size() == B.A.size());
+        size_t n = A.size();
+        vector<point> C(n), D(n);
+
+        for (size_t i = 0; i < n; i++) {
+            C[i] = A[i] * (B[i] + conj(B[(n - i) % n]));
+            D[i] = A[i] * (B[i] - conj(B[(n - i) % n]));
         }
 
-        vector<Mint> operator*(const dft& B) const {
-            assert(A.size() == B.A.size());
-            size_t n = A.size();
-            vector<point> C(n), D(n);
+        FFT<ftype>::fft(C, static_cast<int>(n));
+        FFT<ftype>::fft(D, static_cast<int>(n));
 
-            for (size_t i = 0; i < n; i++) {
-                C[i] = A[i] * (B[i] + conj(B[(n - i) % n]));
-                D[i] = A[i] * (B[i] - conj(B[(n - i) % n]));
-            }
+        reverse(C.begin() + 1, C.end());
+        reverse(D.begin() + 1, D.end());
 
-            fft(C, static_cast<int>(n));
-            fft(D, static_cast<int>(n));
+        int t = 2 * static_cast<int>(n);
+        vector<Mint> res(n);
 
-            reverse(C.begin() + 1, C.end());
-            reverse(D.begin() + 1, D.end());
-
-            int t = 2 * static_cast<int>(n);
-            vector<Mint> res(n);
-
-            for (size_t i = 0; i < n; i++) {
-                Mint A0 = llroundl(real(C[i]) / t);
-                Mint A1 = llroundl(imag(C[i]) / t + imag(D[i]) / t);
-                Mint A2 = llroundl(real(D[i]) / t);
-                res[i] = A0 + A1 * split - A2 * split * split;
-            }
-
-            return res;
+        for (size_t i = 0; i < n; i++) {
+            Mint A0 = llroundl(real(C[i]) / t);
+            Mint A1 = llroundl(imag(C[i]) / t + imag(D[i]) / t);
+            Mint A2 = llroundl(real(D[i]) / t);
+            res[i] = A0 + A1 * split - A2 * split * split;
         }
 
-        point& operator[](int i) { return A[i]; }
-        point operator[](int i) const { return A[i]; }
-    };
+        return res;
+    }
 
+    point& operator[](int i) { return A[i]; }
+    point operator[](int i) const { return A[i]; }
+};
+namespace fft {
     inline size_t commonSize(size_t n, size_t m) {
         if (!n || !m) {
             return 0;
@@ -134,18 +135,16 @@ namespace fft {
         return k;
     }
 
-    template<typename Mint>
+    template <typename Mint, typename ftype>
     void mul(vector<Mint>& a, const vector<Mint>& b) {
-        if (min(a.size(), b.size()) < naiveThreshold) {
-            mulNaive(a, b);
+        if (min(a.size(), b.size()) < FFT<ftype>::naiveThreshold) {
+            FFT<ftype>::mulNaive(a, b);
             return;
         }
 
         size_t n = commonSize(a.size(), b.size());
-        dft<Mint> dftA(a, n);
-        dft<Mint> dftB(b, n);
+        DFT<Mint, ftype> dftA(a, n);
+        DFT<Mint, ftype> dftB(b, n);
         a = dftA * dftB;
     }
-
-
 } // namespace fft

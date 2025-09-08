@@ -10,13 +10,13 @@ using namespace std;
 // Time : O(n * log(n))
 // Space : O(n)
 
-template <typename ftype>
+template <typename ftype = double>
 struct FFT {
     static constexpr int maxn = 1 << 20;      // must be power of 2
     static constexpr int naiveThreshold = 50; // Threshold to use naive algorithm
 
     typedef complex<ftype> point;
-    static constexpr ftype pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286;
+    inline static ftype pi = acosl(-1);
     inline static point w[maxn];  // w[2^n + k] = exp(pi * k / (2^n))
     inline static int bitr[maxn]; // b[2^n + k] = bitreverse(k)
     inline static bool initiated;
@@ -78,7 +78,7 @@ struct FFT {
     }
 };
 
-template <typename Mint, typename ftype>
+template <typename Mint, typename ftype = double>
 struct DFT {
     typedef complex<ftype> point;
     static constexpr int split = 1 << 15; // ~ sqrt(mod)

@@ -15,7 +15,7 @@ namespace fft {
     constexpr int naiveThreshold = 50; // Threshold to use naive algorithm
     typedef long double ftype; // use regular double if you need less precision
     typedef complex<ftype> point;
-    constexpr ftype pi = acosl(-1);
+    const ftype pi = acosl(-1);
 
     inline point w[maxn];  // w[2^n + k] = exp(pi * k / (2^n))
     inline int bitr[maxn]; // b[2^n + k] = bitreverse(k)

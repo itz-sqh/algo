@@ -12,7 +12,7 @@ using namespace std;
 
 template <typename ftype = double>
 struct FFT {
-    static constexpr int maxn = 1 << 20;      // must be power of 2
+    static constexpr int maxn = 1 << 21;      // must be power of 2
     static constexpr int naiveThreshold = 50; // Threshold to use naive algorithm
 
     typedef complex<ftype> point;

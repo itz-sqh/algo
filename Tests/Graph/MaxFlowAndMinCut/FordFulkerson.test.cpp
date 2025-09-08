@@ -13,5 +13,5 @@ int main() {
         cin >> u >> v >> w;
         ff.addEdge(u, v, w);
     }
-    cout << ff.findMaxFlow(0, n-1);
+    cout << ff.findMaxFlow(0, n-1) << endl;
 }

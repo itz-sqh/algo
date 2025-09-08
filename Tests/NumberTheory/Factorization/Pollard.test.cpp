@@ -1,7 +1,7 @@
 #include "NumberTheory/Factorization/Pollard.h"
 #include <bits/stdc++.h>
 using namespace std;
-#define PROBLEM "https://judge.yosupo.jp/problem/primality_test"
+#define PROBLEM "https://judge.yosupo.jp/problem/factorize"
 
 int main() {
     ios_base::sync_with_stdio(false);

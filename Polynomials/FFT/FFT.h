@@ -128,7 +128,7 @@ namespace fft {
             return 0;
         }
         size_t k = n + m - 1;
-        while (!has_single_bit(k)) {
+        while (popcount(k) != 1) {
             k++;
         }
         return k;

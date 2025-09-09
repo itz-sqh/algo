@@ -1,6 +1,7 @@
 #pragma once
-#include<bits/stdc++.h>
-#include "../Utils/Edge.h"
+#include <queue>
+#include <vector>
+#include "Graph/Utils/Edge.h"
 
 using namespace std;
 
@@ -15,8 +16,11 @@ struct MST {
 
     // index is optional parameter
     void addEdge(int from, int to, int weight, int index = 0) {
-        graph[from].emplace_back(from, to, weight, index);
-        graph[to].emplace_back(to, from, weight, index);
+        graph[from].emplace_back(from, to, weight);
+        graph[to].emplace_back(to, from, weight);
+
+        graph[from].back().index = index;
+        graph[to].back().index = index;
     }
 
     vector<Edge> buildMST(int start = 0) const {

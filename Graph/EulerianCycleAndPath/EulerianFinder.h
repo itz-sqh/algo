@@ -1,6 +1,7 @@
 #pragma once
-#include <bits/stdc++.h>
-#include "../Utils/Edge.h"
+#include <vector>
+#include <algorithm>
+#include "Graph/Utils/Edge.h"
 
 using namespace std;
 
@@ -36,13 +37,15 @@ struct EulerianFinder {
         int id = idCount++;
         if (from == to)
             selfLoops[from]++;
-        graph[from].emplace_back(from, to, weight, index);
+        graph[from].emplace_back(from, to, weight);
+        graph[from].back().index = index;
         graph[from].back().id = id;
         outDegree[from]++;
         inDegree[to]++;
         if (!isDirected && from != to) {
             graph[to].emplace_back(to, from, weight, index);
             graph[to].back().id = id;
+            graph[to].back().index = index;
             outDegree[to]++;
             inDegree[from]++;
         }

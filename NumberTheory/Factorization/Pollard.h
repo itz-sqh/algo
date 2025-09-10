@@ -5,7 +5,7 @@
 #include "NumberTheory/PrimalityTest/MillerRabin.h"
 #include <numeric>
 
-struct Pollard {
+namespace Pollard {
     // Factors number n in O(n^1/4 * log(n)) and sorts all factors
     // Uses Floyd's cycle-finding algorithm
     static std::vector<std::pair<unsigned long long, int>> factorize(unsigned long long n, int iter = 70000) {
@@ -59,4 +59,4 @@ struct Pollard {
         }
 
     }
-};
+}; // namespace Pollard

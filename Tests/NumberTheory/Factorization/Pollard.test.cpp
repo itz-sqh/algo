@@ -13,7 +13,7 @@ int main() {
         cin >> n;
         auto factors = Pollard::factorize(n);
         int size = 0;
-        for (const auto& power: factors | views::values)
+        for (const auto& [factor, power] : factors)
             size += power;
         cout << size << " ";
         for (const auto& [factor, power]: factors)

@@ -1,16 +1,16 @@
 #include <bits/stdc++.h>
-#include "NumberTheory/Utils/Mint.h"
+#include "NumberTheory/Utils/Modint.h"
 #include "Polynomials/ModintPolynomial/ModintPolynomial.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/product_of_polynomial_sequence"
 using namespace std;
 constexpr int MOD = 998244353;
+using Mint = Modint<MOD>;
 using polynom = ModintPolynomial<Mint>;
 
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    Mint::MOD = MOD;
     int n; cin >> n;
     vector<polynom> p(n);
     multiset<polynom, decltype([](const polynom& a, const polynom& b) {return a.deg() < b.deg();})> st = {polynom(1)};

@@ -66,8 +66,20 @@ namespace Interpolation {
         vector<polynom> tree(4 * n);
         polynom::build(tree, x, 1, 0, n);
 
+        vector<Mint> deriv(n);
+        auto eval = [&](auto&& self, int v, int l, int r, const polynom& poly) -> void {
+            if (r - l == 1) {
+                deriv[l] = poly.evaluate(x[l]);
+                return;
+            }
+            int m = (l + r) / 2;
+            self(self, 2 * v, l, m, poly % tree[2 * v]);
+            self(self, 2 * v + 1, m, r, poly % tree[2 * v + 1]);
+        };
+        eval(eval, 1, 0, n, tree[1].derivative());
+
         auto inter = [&](auto&& self, int v, int l, int r) -> polynom {
-            if (r - l == 1) return polynom(y[l] / tree[1].derivative().evaluate(x[l]));
+            if (r - l == 1) return polynom(y[l] / deriv[l]);
             int m = (l + r) / 2;
             return self(self, 2 * v, l, m) * tree[2 * v + 1]
             + self(self, 2 * v + 1, m, r) * tree[2 * v];

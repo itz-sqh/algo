@@ -5,6 +5,7 @@ struct Modint
 {
     long long x;
     constexpr Modint(long long v = 0) : x(v% MOD + (v >= 0 ? 0 : MOD)) {}
+    constexpr Modint operator-() const { return x ? MOD - x : 0; }
     constexpr Modint operator+(const Modint& rhs) const { return Modint(*this) += rhs; }
     constexpr Modint operator-(const Modint& rhs) const { return Modint(*this) -= rhs; }
     constexpr Modint operator*(const Modint& rhs) const { return Modint(*this) *= rhs; }

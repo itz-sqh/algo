@@ -6,20 +6,25 @@ using namespace std;
 constexpr int MOD = 998244353;
 using Mint = Modint<MOD>;
 using polynom = ModintPolynomial<Mint>;
-
+struct cmp {
+    bool operator()(const polynom& a, const polynom& b) const { return a.deg() < b.deg(); }
+};
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int n; cin >> n;
+    int n;
+    cin >> n;
     vector<polynom> p(n);
-    multiset<polynom, decltype([](const polynom& a, const polynom& b) {return a.deg() < b.deg();})> st = {polynom(1)};
+    multiset<polynom, cmp> st = { polynom(1) };
     int d = 0;
     for (int i = 0; i < n; ++i) {
-        int x; cin >> x;
+        int x;
+        cin >> x;
         d += x;
         vector<Mint> a(x + 1);
-        for (auto& y :a) cin >> y;
+        for (auto& y: a)
+            cin >> y;
         st.insert(polynom(a));
     }
     while (st.size() > 1) {

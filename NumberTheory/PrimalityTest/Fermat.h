@@ -3,7 +3,7 @@
 #include "Utils/Rng.h"
 #include <numeric>
 // UNTESTED !!!
-struct Fermat {
+namespace Fermat {
     static bool isPrime(long long n, int iter = 100) {
         if (n < 4)
             return n == 2 || n == 3;
@@ -15,4 +15,4 @@ struct Fermat {
         }
         return true;
     }
-};
+}; // namespace Fermat

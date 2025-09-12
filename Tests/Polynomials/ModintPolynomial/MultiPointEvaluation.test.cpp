@@ -4,7 +4,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/multipoint_evaluation"
 using namespace std;
 constexpr unsigned long long MOD = 998244353;
-using Mint = Modint<MOD>;
 using polynom = ModintPolynomial<Mint>;
 
 int main() {

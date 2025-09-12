@@ -123,19 +123,20 @@ struct DFT {
     point& operator[](int i) { return A[i]; }
     point operator[](int i) const { return A[i]; }
 };
-namespace fft {
-    inline size_t commonSize(size_t n, size_t m) {
-        if (!n || !m) {
-            return 0;
-        }
-        size_t k = n + m - 1;
-        while (__builtin_popcount(k) != 1) {
-            k++;
-        }
-        return k;
-    }
 
-    template <typename Mint, typename ftype>
+inline size_t commonSize(size_t n, size_t m) {
+    if (!n || !m) {
+        return 0;
+    }
+    size_t k = n + m - 1;
+    while (__builtin_popcount(k) != 1) {
+        k++;
+    }
+    return k;
+}
+
+namespace fft {
+    template <typename Mint, typename ftype = double>
     void mul(vector<Mint>& a, const vector<Mint>& b) {
         if (min(a.size(), b.size()) < FFT<ftype>::naiveThreshold) {
             FFT<ftype>::mulNaive(a, b);
@@ -146,5 +147,14 @@ namespace fft {
         DFT<Mint, ftype> dftA(a, n);
         DFT<Mint, ftype> dftB(b, n);
         a = dftA * dftB;
+    }
+
+    template <typename Mint, typename ftype = double>
+    vector<Mint> convolution(vector<Mint> a, const vector<Mint> &b) {
+        if (a.empty() || b.empty()) return {};
+        size_t n = a.size(), m = b.size();
+        fft::mul<Mint, ftype>(a, b);
+        a.resize(n + m - 1);
+        return a;
     }
 } // namespace fft

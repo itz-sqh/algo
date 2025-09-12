@@ -14,19 +14,19 @@ struct Dinic {
     vector<int> d, edgePtr;
     int vertexCount;
 
-    explicit Dinic(int vertexCount) : graph(vertexCount), vertexCount(vertexCount), d(vertexCount, -1), edgePtr(vertexCount) {}
+    explicit Dinic(int vertexCount) :
+        graph(vertexCount), vertexCount(vertexCount), d(vertexCount, -1), edgePtr(vertexCount, 0) {}
 
     void addEdge(int from, int to, int capacity, int flow = 0) {
-        graph[from].emplace_back(from, to, capacity, flow);
-        graph[to].emplace_back(to, from, 0, flow);
+        int fromIndex = static_cast<int>(graph[from].size());
+        int toIndex = static_cast<int>(graph[to].size());
 
-        int fromIndex = static_cast<int>(graph[from].size()) - 1;
-        int toIndex = static_cast<int>(graph[to].size()) - 1;
+        graph[from].emplace_back(from, to, capacity, flow);
+        graph[to].emplace_back(to, from, 0, 0);
 
         graph[from][fromIndex].index = toIndex;
         graph[to][toIndex].index = fromIndex;
     }
-
 
     bool bfs(int start, int end) {
         fill(d.begin(), d.end(), -1);
@@ -35,7 +35,8 @@ struct Dinic {
         q.push(start);
 
         while (!q.empty()) {
-            int current = q.front(); q.pop();
+            int current = q.front();
+            q.pop();
             for (const Edge& edge: graph[current]) {
                 int to = edge.to;
                 if (d[to] == -1 && edge.capacity - edge.flow > 0) {
@@ -47,12 +48,15 @@ struct Dinic {
         return d[end] != -1;
     }
     long long dfs(int start, int end, long long flow) {
-        if (start == end) return flow;
-        for (int &id = edgePtr[start]; id < static_cast<int>(graph[start].size()); ++id) {
-            Edge &edge = graph[start][id];
-            if (d[edge.to] != d[start] + 1) continue;
+        if (start == end)
+            return flow;
+        for (int& id = edgePtr[start]; id < static_cast<int>(graph[start].size()); ++id) {
+            Edge& edge = graph[start][id];
+            if (d[edge.to] != d[start] + 1)
+                continue;
             long long avail = edge.capacity - edge.flow;
-            if (avail <= 0) continue;
+            if (avail <= 0)
+                continue;
             long long pushed = dfs(edge.to, end, min(flow, avail));
             if (pushed > 0) {
                 edge.flow += pushed;

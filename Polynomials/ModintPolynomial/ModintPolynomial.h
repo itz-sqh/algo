@@ -6,7 +6,7 @@
 
 template <typename Modint, typename ftype = double>
 class ModintPolynomial {
-private:
+public:
     std::vector<Modint> coefficients;
     static constexpr int naiveThreshold = 50; // threshold to use naive algorithms
 
@@ -118,10 +118,14 @@ public:
         return ModintPolynomial(std::vector<Modint>(coefficients.begin() + k, coefficients.end()));
     }
 
+    ModintPolynomial substr(size_t l, size_t r) const {
+        return ModintPolynomial(vector<Modint>(
+            begin() + min(l, size()),
+            begin() + min(r, size())
+        ));
+    }
     ModintPolynomial truncate(size_t k) const {
-        if (k >= coefficients.size())
-            return *this;
-        return ModintPolynomial(std::vector<Modint>(coefficients.begin(), coefficients.begin() + k));
+        return ModintPolynomial(std::vector<Modint>(coefficients.begin(), coefficients.begin() + min(k, coefficients.size())));
     }
 
     Modint evaluate(Modint x) const {
@@ -132,6 +136,42 @@ public:
             power *= x;
         }
         return res;
+    }
+
+    vector<Modint> evaluate(const vector<Modint>& x) const {
+        // https://cp-algorithms.com/algebra/polynomial.html#multi-point-evaluation
+        // Time : O(n * log^2(n))
+        // Space : O(n * log(n))
+        int n = x.size();
+        if (empty()) return vector<Modint>(n, 0);
+        vector<ModintPolynomial> tree(4 * n);
+        build(tree, x, 1, 0, n);
+        vector<Modint> res(n);
+        evaluate(tree, x, *this, res, 1, 0, n);
+        return res;
+    }
+    void evaluate(const vector<ModintPolynomial>& tree, const vector<Modint>& x, const ModintPolynomial& poly, vector<Modint>& res,  int v, int l, int r) const {
+        auto p = poly % tree[v];
+        if (r - l <= naiveThreshold) {
+            for (int i = l; i < r; i++) {
+                res[i] = p.evaluate(x[i]);
+            }
+            return;
+        }
+        int mid = (l + r) / 2;
+        evaluate(tree, x, p, res, 2 * v, l, mid);
+        evaluate(tree, x, p, res, 2 * v + 1, mid, r);
+    }
+
+    static void build(vector<ModintPolynomial>& tree, const vector<Modint>& x, int v, int l, int r) {
+        if (r - l == 1) {
+            tree[v] = ModintPolynomial({-x[l], 1});
+            return;
+        }
+        int m = (l + r) / 2;
+        build(tree, x, 2 * v, l, m);
+        build(tree, x, 2 * v + 1, m, r);
+        tree[v] = tree[2 * v] * tree[2 * v + 1];
     }
 
     ModintPolynomial derivative(int k = 1) const {
@@ -154,9 +194,11 @@ public:
         }
         return ModintPolynomial(res);
     }
-    ModintPolynomial log(size_t n) { // calculate log p(x) mod x^n
+    ModintPolynomial log(size_t n) const {
+        // calculate log p(x) mod x^n
+        // https://cp-algorithms.com/algebra/polynomial.html#logarithm
         assert(coefficients[0] == Modint(1));
-        return (derivative().truncate(n) * inverse(n)).integral().truncate(n);
+        return (derivative().truncate(n) * inverse(n)).truncate(n-1).integral().truncate(n);
     }
     ModintPolynomial exp(size_t n) const {
         if (empty())
@@ -164,49 +206,62 @@ public:
         assert(coefficients[0] == Modint(0));
 
         ModintPolynomial res(Modint(1));
-        for (size_t a = 1; a < n; a *= 2) {
-            size_t sz = std::min(2 * a, n);
-            ModintPolynomial C = truncate(sz) - res.log(sz);
-            C[0] += Modint(1);
-            res = (res * C).truncate(sz);
+        size_t a = 1;
+        while (a < n) {
+            ModintPolynomial c = res.log(2 * a).shiftLeft(a) - substr(a, 2 * a);
+            res -= (res * c).truncate(a).shiftRight(a);
+            a *= 2;
+        }
+        return res.truncate(n);
+    }
+    ModintPolynomial binpowNaive(size_t k, size_t n) const
+    {
+        // calculate f(x)^k mod x^n
+        if (k == 0)
+            return ModintPolynomial(Modint(1));
+        if (empty())
+            return ModintPolynomial(Modint(0));
+        ModintPolynomial res(Modint(1));
+        ModintPolynomial p = truncate(n);
+        while (k)
+        {
+            if (k & 1)
+                res = (res * p).truncate(n);
+            p = (p * p).truncate(n);
+            k >>= 1;
         }
         return res;
     }
+
     ModintPolynomial pow(size_t k, size_t n) const {
         // calculate f(x)^k mod x^n
+        // https://cp-algorithms.com/algebra/polynomial.html#k-th-power
         if (empty())
             return k ? *this : ModintPolynomial(Modint(1));
-        if (k == 0)
-            return ModintPolynomial(Modint(1)).truncate(n);
-
         size_t trail = trailing();
-
-        if (trail > 0) {
-            if (k >= (n + trail - 1) / trail) {
-                return ModintPolynomial();
-            }
-            return shiftLeft(trail).pow(k, n - trail * k).shiftRight(trail * k);
-        }
-
-        Modint mu = coefficients[0].pow(k);
-        Modint di = coefficients[0].inv();
-
-        ModintPolynomial normalized;
-        for (size_t i = 0; i < std::min(coefficients.size(), n); i++)
-            normalized[i] = coefficients[i] * di;
-
-        ModintPolynomial log = normalized.log(n) * Modint(k);
-        ModintPolynomial exp = log.exp(n);
-
-        ModintPolynomial res;
-        for (size_t i = 0; i < exp.size() && i < n; i++) {
-            res[i] = exp[i] * mu;
-        }
-
-        return res.truncate(n);
+        if (trail > 0)
+            return k >= static_cast<long long>(n + trail - 1) / trail
+                ? ModintPolynomial(Modint(0))
+                : shiftLeft(trail).pow(k, n - trail * k).shiftRight(trail * k);
+        if (k <= naiveThreshold)
+            return binpowNaive(k, n);
+        ModintPolynomial b; b.coefficients.resize(coefficients.size());
+        int p = 0;
+        while (k * p < static_cast<int>(coefficients.size()) && coefficients[p] == Modint(0)) p++;
+        if (1ll * k * p >= static_cast<int>(coefficients.size())) return b;
+        Modint mu = Modint::pow(coefficients[p], k), di = coefficients[p].inv();
+        size_t m = k * p;
+        ModintPolynomial c; c.coefficients.resize(n - m);
+        for (int x = 0; x < n - m; x++) c.coefficients[x] = coefficients[x + p] * di;
+        c = c.log(n - m);
+        for (auto& x : c.coefficients) x *= k;
+        c = c.exp(n - m);
+        for (int x = 0; x < static_cast<int>(c.size()); x++) b.coefficients[x + m] = c.coefficients[x] * mu;
+        return b;
     }
 
     ModintPolynomial inverse(size_t n) const {
+        // https://cp-algorithms.com/algebra/polynomial.html#inverse-series_1
         assert(!empty());
         assert(coefficients[0] != Modint(0));
 
@@ -286,9 +341,10 @@ public:
         }
         std::cout << std::endl;
     }
-    [[nodiscard]] size_t trailing() const { // p(x) = x^k*t(x), return k
+    [[nodiscard]] size_t trailing() const {
+        // f(x) = x^k * p(x), return k
         if (empty())
-            return -1;
+            return 0;
         int res = 0;
         while (coefficients[res] == Modint(0) && res < coefficients.size())
             res++;
@@ -310,7 +366,7 @@ public:
         return res;
     }
     ModintPolynomial mulx(Modint a) const {
-        // component-wise multiplication with a^k
+        // f(ax)
         Modint cur = 1;
         ModintPolynomial res(*this);
         for (int i = 0; i <= deg(); i++) {
@@ -319,11 +375,10 @@ public:
         }
         return res;
     }
-    static ModintPolynomial ones(size_t n) { return ModintPolynomial(std::vector<Modint>(n, Modint(1))); }
-    static ModintPolynomial expx(size_t n) { return ones(n).borel(); }
 
     ModintPolynomial taylorShift(Modint a) const {
-        return (expx(deg() + 1).mulx(a).reverse() * invborel()).shiftLeft(deg()).borel();
+        vector<Modint> ones(deg() + 1, 1);
+        return (ModintPolynomial(ones).borel().mulx(a).reverse() * invborel()).shiftLeft(deg()).borel();
     }
 
     bool operator==(const ModintPolynomial& other) const { return coefficients == other.coefficients; }

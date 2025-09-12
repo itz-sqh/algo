@@ -6,13 +6,13 @@ using namespace std;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int n, m; cin >> n >> m;
+    int n, m;
+    cin >> n >> m;
     Dinic dinic(n);
     for (int i = 0; i < m; i++) {
         int from, to, capacity;
         cin >> from >> to >> capacity;
-        from--, to--;
         dinic.addEdge(from, to, capacity);
     }
-    cout << dinic.findMaxFlow(0, n -1) << endl;
+    cout << dinic.findMaxFlow(0, n - 1) << endl;
 }

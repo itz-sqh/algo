@@ -1,5 +1,5 @@
 #pragma once
-#include "NumberTheory/Utils/Factrorial.h"
+#include "NumberTheory/Utils/Factorial.h"
 #include "NumberTheory/Utils/Mint.h"
 
 namespace Binomial {

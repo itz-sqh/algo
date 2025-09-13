@@ -2,7 +2,6 @@
 
 #include <vector>
 using namespace std;
-// UNTESTED !!!
 template <typename Modint>
 class Factorial {
 private:

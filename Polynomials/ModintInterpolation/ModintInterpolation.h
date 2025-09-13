@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "NumberTheory/Factorials/Factorial.h"
+#include "NumberTheory/Utils/Factorial.h"
 #include "Polynomials/FFT/FFT.h"
 #include "Polynomials/ModintPolynomial/ModintPolynomial.h"
 using namespace std;

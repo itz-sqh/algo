@@ -5,6 +5,7 @@ struct Mint
     static long long MOD;
     long long x;
     Mint(long long v = 0) : x(v% MOD + (v >= 0 ? 0 : MOD)) {}
+    Mint operator-() const { return x ? MOD - x : 0; }
     Mint operator+(const Mint& rhs) const { return Mint(*this) += rhs; }
     Mint operator-(const Mint& rhs) const { return Mint(*this) -= rhs; }
     Mint operator*(const Mint& rhs) const { return Mint(*this) *= rhs; }

@@ -1,6 +1,6 @@
 #pragma once
-#include "Factrorial.h"
-#include "Mint.h"
+#include "NumberTheory/Utils/Factorial.h"
+#include "NumberTheory/Utils/Mint.h"
 
 namespace Binomial {
     template<typename Modint = Mint>

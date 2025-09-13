@@ -1,19 +1,19 @@
-#include "NumberTheory/Utils/Modint.h"
-#include "Polynomials/ModintPolynomial/ModintPolynomial.h"
 #include <bits/stdc++.h>
+#include "NumberTheory/Utils/Mint.h"
+#include "Polynomials/ModintPolynomial/ModintPolynomial.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/pow_of_formal_power_series_sparse"
 constexpr long long MOD = 998244353;
 
-using mint = Modint<MOD>;
-using polynom = ModintPolynomial<mint>;
+using polynom = ModintPolynomial<Mint>;
 using namespace std;
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
+    Mint::MOD = MOD;
     long long n, k, m;
     cin >> n >> k >> m;
-    vector<mint> a(n);
+    vector<Mint> a(n);
     for (int i = 0; i < k; i++) {
         int idx;
         cin >> idx;

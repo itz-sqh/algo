@@ -1,7 +1,21 @@
 #pragma once
 #include "Utils/Binpow.h"
 
-struct MillerRabin {
+namespace MillerRabin {
+
+    static bool checkComposite(unsigned long long n, unsigned long long a, unsigned long long d, int s) {
+        long long x = binpow(a, d, n);
+        if (x == 1 || x == n - 1)
+            return false;
+        for (int r = 0; r < s; r++) {
+            x = mulmod(x, x, n);
+            if (x == n - 1)
+                return false;
+        }
+        // definitely composite for this witness
+        return true;
+    }
+
     // Deterministic for all 64-bit integers
     // Determines if a number is prime in O(k * log^2(n)), k - number of bases
     static bool isPrime(unsigned long long n) {
@@ -30,16 +44,4 @@ struct MillerRabin {
         }
         return true;
     }
-    static bool checkComposite(unsigned long long n, unsigned long long a, unsigned long long d, int s) {
-        long long x = binpow(a, d, n);
-        if (x == 1 || x == n - 1)
-            return false;
-        for (int r = 0; r < s; r++) {
-            x = mulmod(x, x, n);
-            if (x == n - 1)
-                return false;
-        }
-        // definitely composite for this witness
-        return true;
-    }
-};
+}; // namespace MillerRabin

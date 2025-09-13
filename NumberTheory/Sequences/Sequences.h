@@ -13,7 +13,7 @@ namespace Sequences {
         // Space : O(n * log(n))
         using polynom = ModintPolynomial<Mint>;
         polynom p;
-        if (n == 0) return vector<Mint>({1});
+        if (n == 0) return {1};
         p.coefficients = stirlingFirstKindAll(n / 2);
         p *= p.taylorShift(-n/2);
         if (n & 1) p *= polynom({1 - n, 1});

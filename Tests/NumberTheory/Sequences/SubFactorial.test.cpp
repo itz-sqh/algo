@@ -10,6 +10,5 @@ int main() {
     int n, m; cin >> n >> m;
     Mint::MOD = m;
     auto res = Sequences::subFactorial(n);
-    for (auto x : res)
-        cout << x << " ";
+    for (int i = 1; i <= n; ++i) cout << res[i] << ' ';
 }

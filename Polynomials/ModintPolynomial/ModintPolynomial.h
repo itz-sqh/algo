@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "NumberTheory/Factorials/Factorial.h"
+#include "NumberTheory/Utils/Factorial.h"
 #include "Polynomials/FFT/FFT.h"
 
 template <typename Modint, typename ftype = double>

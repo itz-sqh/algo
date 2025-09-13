@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
-#include "NumberTheory/Utils/Modint.h"
+#include "NumberTheory/Utils/Mint.h"
 #include "Polynomials/ModintInterpolation/ModintInterpolation.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/shift_of_sampling_points_of_polynomial"
 using namespace std;
 constexpr unsigned long long MOD = 998244353;
-using Mint = Modint<MOD>;
 
 
 int main() {

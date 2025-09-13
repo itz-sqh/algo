@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
-#include "NumberTheory/Utils/Modint.h"
+#include "NumberTheory/Utils/Mint.h"
 #include "Polynomials/ModintPolynomial/ModintPolynomial.h"
 #define PROBLEM "https://judge.yosupo.jp/problem/product_of_polynomial_sequence"
 using namespace std;
 constexpr int MOD = 998244353;
-using Mint = Modint<MOD>;
 using polynom = ModintPolynomial<Mint>;
 struct cmp {
     bool operator()(const polynom& a, const polynom& b) const { return a.deg() < b.deg(); }

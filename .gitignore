@@ -49,3 +49,6 @@ conaninfo.txt
 *.pdb
 *.idb
 *.ilk
+
+includeparser.py
+clearMain.cpp

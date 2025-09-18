@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "Graph/MaximumMatching/Kuhn.h"
-#define PROBLEM "https://judge.yosupo.jp/problem/biconnected_components"
+#define PROBLEM "https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/7/GRL_7_A"
 
 int main() {
     ios_base::sync_with_stdio(false);

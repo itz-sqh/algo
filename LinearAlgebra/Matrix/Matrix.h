@@ -96,7 +96,7 @@ private:
     constexpr void normalize(size_t row);
     constexpr void eliminate(size_t col, bool upwards);
     constexpr auto classifyVariables(size_t lim) const;
-    constexpr Matrix& gauss();
+    constexpr size_t gauss();
     constexpr Matrix& gaussJordan();
     constexpr bool isZero(mtype v) const {
         if constexpr (std::is_floating_point_v<mtype>) return std::abs(v) <= std::numeric_limits<mtype>::epsilon();
@@ -367,7 +367,7 @@ constexpr void Matrix<mtype>::eliminate(size_t col, bool upwards) {
     size_t end = upwards ? col : n;
     for(size_t i = start; i < end; i++) {
         if(i == col) continue;
-        mtype factor = data[i][col];
+        mtype factor = data[i][col] / data[col][col];
         for(size_t j = col; j < m; j++)
             data[i][j] -= factor * data[col][j];
     }
@@ -375,7 +375,8 @@ constexpr void Matrix<mtype>::eliminate(size_t col, bool upwards) {
 
 
 template<typename mtype>
-constexpr Matrix<mtype>& Matrix<mtype>::gauss() {
+constexpr size_t Matrix<mtype>::gauss() {
+    size_t swaps = 0;
     for(size_t i = 0; i < n; i++) {
         size_t p = n;
         for (size_t j = i; j < n; j++)
@@ -384,21 +385,18 @@ constexpr Matrix<mtype>& Matrix<mtype>::gauss() {
                 break;
             }
         if(p == n) continue;
-        if(p != i) std::swap(data[i], data[p]);
-        normalize(i);
+        if(p != i) { std::swap(data[i], data[p]); swaps ^= 1; }
         eliminate(i, false);
     }
-    return *this;
+    return swaps;
 }
 
 template<typename mtype>
 constexpr Matrix<mtype>& Matrix<mtype>::gaussJordan() {
-    // [A | E] -> [E | A^-1]
     gauss();
-    for(int i = n-1; i >= 0; i--) {
-        if(isZeroRow((*this)[i])) continue;
-        eliminate(i, true);
-    }
+    for (int i = n - 1; i >= 0; i--)
+        if (!isZero(data[i][i]))
+            eliminate(i, true);
     return *this;
 }
 
@@ -420,9 +418,10 @@ template<typename mtype>
 constexpr mtype Matrix<mtype>::det() const {
     assert(n == m && "Matrix must be a square in order to use Matrix::det");
     Matrix tmp = *this;
-    tmp.gauss();
+    size_t swaps = tmp.gauss();
     mtype res = 1;
-    for(size_t i = 0; i < n; i++) res *= tmp[i][i];
+    for(size_t i = 0; i < n; i++) res *= tmp.data[i][i];
+    if (swaps & 1) res = -res;
     return res;
 }
 
@@ -443,8 +442,16 @@ template<typename mtype>
 constexpr std::pair<mtype, Matrix<mtype>> Matrix<mtype>::inv() const {
     assert(n == m && "Matrix must be a square in order to use Matrix::inv");
     Matrix tmp = *this | Matrix(n,n,true);
-    tmp.gaussJordan();
-    return {tmp.det(), tmp.subMatrix(0, n, n - 1, 2 * n - 1)};
+    size_t swaps = tmp.gauss();
+    mtype determinant = 1;
+    for(size_t i = 0; i < n; i++) determinant *= tmp.data[i][i];
+    if (swaps & 1) determinant = -determinant;
+    if (isZero(determinant))
+        return {mtype(0), Matrix(n,n)};
+    for (int i = n - 1; i >= 0; i--)
+        if (!isZero(tmp.data[i][i]))
+            tmp.eliminate(i, true);
+    return {determinant, tmp.subMatrix(0, n, n - 1, 2 * n - 1)};
 }
 
 template<typename mtype>

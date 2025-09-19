@@ -427,11 +427,13 @@ constexpr mtype Matrix<mtype>::det() const {
     return res;
 }
 
+
+
 template<typename mtype>
 constexpr size_t Matrix<mtype>::rank() const {
     Matrix tmp = *this;
     tmp.gauss();
-
+    size_t r = 0;
     for (size_t i = 0; i < n; ++i) {
         bool zero = true;
         for (size_t j = 0; j < m; ++j) {
@@ -440,10 +442,11 @@ constexpr size_t Matrix<mtype>::rank() const {
                 break;
             }
         }
-        if (zero) return i;
+        if (!zero) ++r;
     }
-    return n;
+    return r;
 }
+
 
 template<typename mtype>
 constexpr std::pair<bool, Matrix<mtype>> Matrix<mtype>::inv() const {

@@ -2,6 +2,9 @@
 #include <cassert>
 #include <vector>
 #include <iostream>
+#include <limits>
+#include <cmath>
+#include <cstdint>
 
 template <typename mtype = float>
 struct Matrix {
@@ -71,7 +74,7 @@ struct Matrix {
                 st >> data[i][j];
     }
 
-    constexpr Matrix pow(uint64_t power) const {
+    constexpr Matrix pow(std::uint64_t power) const {
         assert(n == m && "Matrix must be square for Matrix::pow");
         Matrix res = Matrix(n, n, true);
         Matrix A = *this;

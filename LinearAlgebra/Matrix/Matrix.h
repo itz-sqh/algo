@@ -88,6 +88,7 @@ struct Matrix {
     }
 
     constexpr mtype det() const;
+    constexpr mtype gcddet() const;
     [[nodiscard]] constexpr size_t rank() const;
     constexpr std::pair<bool, Matrix> inv() const;
     constexpr std::pair<size_t, std::vector<mtype>> solve() const;
@@ -365,7 +366,7 @@ constexpr void Matrix<mtype>::normalize(size_t row) {
 template<typename mtype>
 constexpr void Matrix<mtype>::eliminate(size_t row, size_t col, bool upwards) {
     size_t start = upwards ? 0 : row + 1;
-    size_t end   = upwards ? row : n;
+    size_t end = upwards ? row : n;
     for (size_t i = start; i < end; i++) {
         if (i == row) continue;
         mtype factor = data[i][col] / data[row][col];
@@ -427,6 +428,36 @@ constexpr mtype Matrix<mtype>::det() const {
     if (swaps & 1) res = -res;
     return res;
 }
+
+
+template<typename mtype>
+constexpr mtype Matrix<mtype>::gcddet() const {
+    assert(n == m && "Matrix must be a square in order to use Matrix::det");
+
+    std::vector tmp(n, std::vector<int>(n));
+    for(size_t i = 0; i < n; i++)
+        for(size_t j = 0; j < n; j++)
+            tmp[i][j] = static_cast<int>(data[i][j]);
+    long long res = 1;
+    int mod = static_cast<int>(mtype::mod());
+
+    for(size_t i = 0; i < n; i++) {
+        for(size_t j = i + 1; j < n; j++) {
+            while(tmp[j][i] != 0) {
+                res = (mod - res) % mod;
+                int c = tmp[i][i] / tmp[j][i];
+                for(size_t k = i; k < n; k++) {
+                    tmp[i][k] = (tmp[i][k] - 1LL * tmp[j][k] * c % mod + mod) % mod;
+                    std::swap(tmp[i][k], tmp[j][k]);
+                }
+            }
+        }
+    }
+    for(size_t i = 0; i < n; i++)
+        res = 1ll * res * tmp[i][i] % mod;
+    return mtype(res);
+}
+
 
 
 

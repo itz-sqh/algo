@@ -96,7 +96,7 @@ private:
     constexpr void normalize(size_t row);
     constexpr void eliminate(size_t col, bool upwards);
     constexpr auto classifyVariables(size_t lim) const;
-    constexpr size_t gauss();
+    constexpr std::pair<size_t,size_t> gauss();
     constexpr Matrix& gaussJordan();
     constexpr bool isZero(mtype v) const {
         if constexpr (std::is_floating_point_v<mtype>) return std::abs(v) <= std::numeric_limits<mtype>::epsilon();
@@ -375,20 +375,19 @@ constexpr void Matrix<mtype>::eliminate(size_t col, bool upwards) {
 
 
 template<typename mtype>
-constexpr size_t Matrix<mtype>::gauss() {
+constexpr std::pair<size_t,size_t> Matrix<mtype>::gauss() {
     size_t swaps = 0;
-    for(size_t i = 0; i < n; i++) {
-        size_t p = n;
-        for (size_t j = i; j < n; j++)
-            if (!isZero(data[j][i])) {
-                p = j;
-                break;
-            }
-        if(p == n) continue;
-        if(p != i) { std::swap(data[i], data[p]); swaps ^= 1; }
-        eliminate(i, false);
+    size_t r = 0;
+    for(size_t col = 0; col < m && r < n; ++col) {
+        size_t p = r;
+        for (; p < n; ++p)
+            if (!isZero(data[p][col])) break;
+        if (p == n) continue;
+        if (p != r) { std::swap(data[p], data[r]); swaps ^= 1; }
+        eliminate(r, false);
+        ++r;
     }
-    return swaps;
+    return {swaps, r};
 }
 
 template<typename mtype>
@@ -420,7 +419,7 @@ template<typename mtype>
 constexpr mtype Matrix<mtype>::det() const {
     assert(n == m && "Matrix must be a square in order to use Matrix::det");
     Matrix tmp = *this;
-    size_t swaps = tmp.gauss();
+    size_t swaps = tmp.gauss().first;
     mtype res = 1;
     for(size_t i = 0; i < n; i++) res *= tmp.data[i][i];
     if (swaps & 1) res = -res;
@@ -432,19 +431,7 @@ constexpr mtype Matrix<mtype>::det() const {
 template<typename mtype>
 constexpr size_t Matrix<mtype>::rank() const {
     Matrix tmp = *this;
-    tmp.gauss();
-    size_t r = 0;
-    for (size_t i = 0; i < n; ++i) {
-        bool zero = true;
-        for (size_t j = 0; j < m; ++j) {
-            if (!isZero(tmp[i][j])) {
-                zero = false;
-                break;
-            }
-        }
-        if (!zero) ++r;
-    }
-    return r;
+    return tmp.gauss().second;
 }
 
 

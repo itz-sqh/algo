@@ -94,10 +94,10 @@ struct Matrix {
 
 private:
     constexpr void normalize(size_t row);
-    constexpr void eliminate(size_t col, bool upwards);
+    constexpr void eliminate(size_t row, size_t col, bool upwards);
     constexpr auto classifyVariables(size_t lim) const;
     constexpr std::pair<size_t,size_t> gauss();
-    constexpr Matrix& gaussJordan();
+    constexpr void gaussJordan();
     constexpr bool isZero(mtype v) const {
         if constexpr (std::is_floating_point_v<mtype>) return std::abs(v) <= std::numeric_limits<mtype>::epsilon();
         else return v == mtype(0);
@@ -354,6 +354,7 @@ constexpr void Matrix<mtype>::fill(mtype val) {
             data[i][j] = val;
 }
 
+
 template<typename mtype>
 constexpr void Matrix<mtype>::normalize(size_t row) {
     mtype div = data[row][row];
@@ -362,43 +363,44 @@ constexpr void Matrix<mtype>::normalize(size_t row) {
 }
 
 template<typename mtype>
-constexpr void Matrix<mtype>::eliminate(size_t col, bool upwards) {
-    size_t start = upwards ? 0 : col + 1;
-    size_t end = upwards ? col : n;
-    for(size_t i = start; i < end; i++) {
-        if(i == col) continue;
-        mtype factor = data[i][col] / data[col][col];
-        for(size_t j = col; j < m; j++)
-            data[i][j] -= factor * data[col][j];
+constexpr void Matrix<mtype>::eliminate(size_t row, size_t col, bool upwards) {
+    size_t start = upwards ? 0 : row + 1;
+    size_t end   = upwards ? row : n;
+    for (size_t i = start; i < end; i++) {
+        if (i == row) continue;
+        mtype factor = data[i][col] / data[row][col];
+        for (size_t j = col; j < m; j++)
+            data[i][j] -= factor * data[row][j];
     }
 }
+
 
 
 template<typename mtype>
 constexpr std::pair<size_t,size_t> Matrix<mtype>::gauss() {
     size_t swaps = 0;
     size_t r = 0;
-    for(size_t col = 0; col < m && r < n; ++col) {
+    for (size_t i = 0; i < m && r < n; ++i) {
         size_t p = r;
         for (; p < n; ++p)
-            if (!isZero(data[p][col])) break;
+            if (!isZero(data[p][i])) break;
         if (p == n) continue;
         if (p != r) { std::swap(data[p], data[r]); swaps ^= 1; }
-        eliminate(r, false);
+        eliminate(r, i, false);
         ++r;
     }
     return {swaps, r};
 }
 
+
 template<typename mtype>
-constexpr Matrix<mtype>& Matrix<mtype>::gaussJordan() {
+constexpr void Matrix<mtype>::gaussJordan() {
     gauss();
     for (int i = n - 1; i >= 0; i--)
         if (!isZero(data[i][i])) {
             normalize(i);
-            eliminate(i, true);
+            eliminate(i,i, true);
         }
-    return *this;
 }
 
 template<typename mtype>

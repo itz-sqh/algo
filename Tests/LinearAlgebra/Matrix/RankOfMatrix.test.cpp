@@ -8,7 +8,7 @@ int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     size_t n,m; cin >> n >> m;
-    Matrix<Mint> A(n,n);
+    Matrix<Mint> A(n,m);
     cin >> A;
     cout << A.rank();
 }

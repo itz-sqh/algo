@@ -431,18 +431,18 @@ template<typename mtype>
 constexpr size_t Matrix<mtype>::rank() const {
     Matrix tmp = *this;
     tmp.gauss();
-    size_t rank = 0;
-    size_t col = 0;
+
     for (size_t i = 0; i < n; ++i) {
-        while (col < m && isZero(tmp[i][col])) {
-            col++;
+        bool zero = true;
+        for (size_t j = 0; j < m; ++j) {
+            if (!isZero(tmp[i][j])) {
+                zero = false;
+                break;
+            }
         }
-        if (col < m) {
-            rank++;
-            col++;
-        }
+        if (zero) return i;
     }
-    return rank;
+    return n;
 }
 
 template<typename mtype>

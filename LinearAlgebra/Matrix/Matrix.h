@@ -89,7 +89,7 @@ struct Matrix {
 
     constexpr mtype det() const;
     [[nodiscard]] constexpr size_t rank() const;
-    constexpr std::pair<mtype, Matrix> inv() const;
+    constexpr std::pair<bool, Matrix> inv() const;
     constexpr std::pair<size_t, std::vector<mtype>> solve() const;
 
 private:
@@ -395,8 +395,10 @@ template<typename mtype>
 constexpr Matrix<mtype>& Matrix<mtype>::gaussJordan() {
     gauss();
     for (int i = n - 1; i >= 0; i--)
-        if (!isZero(data[i][i]))
+        if (!isZero(data[i][i])) {
+            normalize(i);
             eliminate(i, true);
+        }
     return *this;
 }
 
@@ -430,28 +432,28 @@ constexpr size_t Matrix<mtype>::rank() const {
     Matrix tmp = *this;
     tmp.gauss();
     size_t rank = 0;
-    for (size_t i = 0; i < n; ++i)
-        for (size_t j = 0; j < m; ++j)
-            if (!isZero(tmp[i][j])) {
-                rank++; break;
-            }
+    size_t col = 0;
+    for (size_t i = 0; i < n; ++i) {
+        while (col < m && isZero(tmp[i][col])) {
+            col++;
+        }
+        if (col < m) {
+            rank++;
+            col++;
+        }
+    }
     return rank;
 }
 
 template<typename mtype>
-constexpr std::pair<mtype, Matrix<mtype>> Matrix<mtype>::inv() const {
+constexpr std::pair<bool, Matrix<mtype>> Matrix<mtype>::inv() const {
     assert(n == m && "Matrix must be a square in order to use Matrix::inv");
-    Matrix tmp = *this | Matrix(n,n,true);
-    size_t swaps = tmp.gauss();
-    mtype determinant = 1;
-    for(size_t i = 0; i < n; i++) determinant *= tmp.data[i][i];
-    if (swaps & 1) determinant = -determinant;
-    if (isZero(determinant))
-        return {mtype(0), Matrix(n,n)};
-    for (int i = n - 1; i >= 0; i--)
-        if (!isZero(tmp.data[i][i]))
-            tmp.eliminate(i, true);
-    return {determinant, tmp.subMatrix(0, n, n - 1, 2 * n - 1)};
+    Matrix tmp = *this | Matrix(n, n, true);
+    tmp.gaussJordan();
+    for (size_t i = 0; i < n; ++i)
+        if (isZero(tmp[i][i]))
+            return {false, Matrix(n, n)};
+    return {true, tmp.subMatrix(0, n, n - 1, 2 * n - 1)};
 }
 
 template<typename mtype>

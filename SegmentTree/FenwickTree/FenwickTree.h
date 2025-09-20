@@ -1,14 +1,11 @@
 #pragma once
-
 #include<vector>
 using namespace std;
-
-
 struct Fenwick {
     size_t n;
     vector<long long> bit;
     explicit Fenwick(const vector<int>& a) : n(a.size()), bit(n) {
-        vector<int> pref(n+1);
+        vector<long long> pref(n+1);
         pref[0] = 0;
         for (int i = 0; i < n; i++)
             pref[i+1] = pref[i] + a[i];

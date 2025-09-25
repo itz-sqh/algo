@@ -1,10 +1,10 @@
 #pragma once
 #include <cassert>
-#include <vector>
-#include <iostream>
-#include <limits>
 #include <cmath>
 #include <cstdint>
+#include <vector>
+#include "NumberTheory/Utils/Gcd.h"
+#include "Utils/Rng.h"
 
 template <typename mtype = float>
 struct Matrix {
@@ -91,6 +91,8 @@ struct Matrix {
     constexpr mtype gcddet() const;
     [[nodiscard]] constexpr size_t rank() const;
     constexpr std::pair<bool, Matrix> inv() const;
+    constexpr std::pair<bool, Matrix> gcdinv() const;
+    constexpr Matrix adjugate() const;
     constexpr std::pair<size_t, std::vector<mtype>> solve() const;
 
 private:
@@ -111,11 +113,11 @@ constexpr Matrix<mtype>::Matrix() : n(0), m(0) {}
 
 
 template<typename mtype>
-constexpr Matrix<mtype>::Matrix(size_t n, size_t m, const bool identity) : n(n),m(m), data(n,std::vector<mtype>(m,0)) {
+constexpr Matrix<mtype>::Matrix(size_t n, size_t m, const bool identity) : n(n),m(m), data(n,std::vector<mtype>(m)) {
     if (identity) {
         assert(!(identity && n!=m) && "Identity Matrix must be a square Matrix");
         for (size_t i = 0; i < n; ++i) {
-            data[i][i] = 1;
+            data[i][i] = {1};
         }
     }
 }
@@ -423,7 +425,7 @@ constexpr mtype Matrix<mtype>::det() const {
     assert(n == m && "Matrix must be a square in order to use Matrix::det");
     Matrix tmp = *this;
     size_t swaps = tmp.gauss().first;
-    mtype res = 1;
+    mtype res = {1};
     for(size_t i = 0; i < n; i++) res *= tmp.data[i][i];
     if (swaps & 1) res = -res;
     return res;
@@ -447,7 +449,7 @@ constexpr mtype Matrix<mtype>::gcddet() const {
                 res = (mod - res) % mod;
                 int c = tmp[i][i] / tmp[j][i];
                 for(size_t k = i; k < n; k++) {
-                    tmp[i][k] = (tmp[i][k] - 1LL * tmp[j][k] * c % mod + mod) % mod;
+                    tmp[i][k] = (tmp[i][k] - 1ll * tmp[j][k] * c % mod + mod) % mod;
                     std::swap(tmp[i][k], tmp[j][k]);
                 }
             }
@@ -480,12 +482,86 @@ constexpr std::pair<bool, Matrix<mtype>> Matrix<mtype>::inv() const {
 }
 
 template<typename mtype>
+constexpr std::pair<bool, Matrix<mtype>> Matrix<mtype>::gcdinv() const {
+    using ll = long long;
+    assert(n == m && "Matrix must be a square in order to use Matrix::inv");
+    int mod = static_cast<int>(mtype::mod());
+    auto norm = [&](long long v){ v %= mod; return v < 0 ? v + mod : v; };
+    std::vector tmp(n, std::vector<int>(2 * n));
+    for (size_t i = 0; i < n; i++) {
+        for (size_t j = 0; j < n; j++)
+            tmp[i][j] = static_cast<int>(data[i][j]);
+        tmp[i][n + i] = 1;
+    }
+    for (size_t i = 0; i < n; i++) {
+        size_t p = i;
+        while (p < n && tmp[p][i] == 0) p++;
+        if (p == n) return {false, Matrix(n, n)};
+        if (p != i) std::swap(tmp[p], tmp[i]);
+        for (size_t j = i + 1; j < n; j++) if (tmp[j][i]) {
+            ll x, y, a = tmp[i][i], b = tmp[j][i];
+            ll g = exgcd(a, b, x, y);
+            ll ci1 = norm(x), ci2 = norm(y);
+            ll cj1 = norm(-b / g), cj2 = norm(a / g);
+            for (size_t k = i; k < 2 * n; k++) {
+                ll ik = tmp[i][k], jk = tmp[j][k];
+                tmp[i][k] = norm(ci1 * ik + ci2 * jk);
+                tmp[j][k] = norm(cj1 * ik + cj2 * jk);
+            }
+        }
+        if (tmp[i][i] == 0) return {false, Matrix(n, n)};
+    }
+    for (int i = n - 1; i >= 0; i--) {
+        int inv = static_cast<int>(mtype(tmp[i][i]).inv());
+        for (size_t k = i; k < 2 * n; k++) {
+            tmp[i][k] = 1ll * tmp[i][k] * inv % mod;
+        }
+        for (int j = i - 1; j >= 0; j--) {
+            if (tmp[j][i] != 0) {
+                int factor = tmp[j][i];
+                for (size_t k = i; k < 2 * n; k++)
+                    tmp[j][k] = (tmp[j][k] - 1ll * factor * tmp[i][k] % mod + mod) % mod;
+            }
+        }
+    }
+    Matrix res(n, n);
+    for (size_t i = 0; i < n; i++)
+        for (size_t j = 0; j < n; j++)
+            res[i][j] = mtype(tmp[i][n + j]);
+
+    return {true, res};
+}
+
+template<typename mtype>
+constexpr Matrix<mtype> Matrix<mtype>::adjugate() const {
+    size_t n = this->n;
+    Matrix A(n + 1, n + 1);
+    for (size_t i = 0; i < n; i++)
+        for (size_t j = 0; j < n; j++)
+            A[i][j] = data[i][j];
+    for (size_t i = 0; i < n; i++) {
+        A[i][n] = mtype(Rng::getInt());
+        A[n][i] = mtype(Rng::getInt());
+    }
+    A[n][n] = {0};
+    mtype det = A.gcddet();
+    auto [invertible, invmat] = A.gcdinv();
+    Matrix res(n, n);
+    if (invertible)
+        for (size_t i = 0; i < n; i++)
+            for (size_t j = 0; j < n; j++) {
+                auto r = invmat[n][n] * invmat[i][j] - invmat[i][n] * invmat[n][j];
+                res[i][j] = r * det;
+            }
+    return res;
+}
+
+template<typename mtype>
 constexpr std::pair<size_t, std::vector<mtype>> Matrix<mtype>::solve() const {
     // TODO return basis
     Matrix tmp = *this;
     tmp.gauss();
     auto [pivots, free] = tmp.classifyVariables(m-1);
-
     for(size_t i = pivots.size(); i < n; ++i)
         if(!isZero(tmp[i][m-1]))
             return {0, {}};
@@ -498,7 +574,6 @@ constexpr std::pair<size_t, std::vector<mtype>> Matrix<mtype>::solve() const {
         }
         res[col] /= tmp[i][col];
     }
-
     return {free.empty() ? 1 : 2, res};
 }
 

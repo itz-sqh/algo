@@ -14,8 +14,8 @@ struct Mint
     Mint operator-=(const Mint& rhs) { x -= rhs.x; if (x < 0) x += MOD; return *this; }
     Mint operator*=(const Mint& rhs) { (x *= rhs.x) %= MOD; return *this; }
     Mint operator/=(const Mint& rhs) { return *this *= pow(rhs, -1); }
-    Mint operator==(const Mint& rhs) const { return x == rhs.x; }
-    Mint operator!=(const Mint& rhs) const { return x != rhs.x; }
+    bool operator==(const Mint& rhs) const { return x == rhs.x; }
+    bool operator!=(const Mint& rhs) const { return x != rhs.x; }
     long long rem() const { return 2 * x > MOD ? x - MOD : x; }
     Mint pow(long long p) const { return pow(*this, p); }
     Mint inv() const { return pow(x, -1); }

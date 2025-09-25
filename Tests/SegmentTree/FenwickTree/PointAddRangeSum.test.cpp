@@ -1,7 +1,7 @@
 #include <iostream>
 #include "SegmentTree/FenwickTree/FenwickTree.h"
 using namespace std;
-#define PROBLEM "https://judge.yosupo.jp/problem/static_range_sum"
+#define PROBLEM "https://judge.yosupo.jp/problem/point_add_range_sum"
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);

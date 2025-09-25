@@ -11,6 +11,6 @@ int main() {
     Fenwick fenwick(a);
     for (int i = 0; i < q; i++) {
         int l, r; cin >> l >> r;
-        cout << fenwick.sum(l, r - 1) << endl;
+        cout << fenwick.sum(l, r) << endl;
     }
 }

@@ -1,25 +1,27 @@
 #pragma once
-#include <random>
 #include <chrono>
+#include <float.h>
+#include <limits.h>
+#include <random>
 
 class Rng {
 public:
-    static int getInt(int min, int max) {
+    static int getInt(int min = INT_MIN, int max = INT_MAX) {
         init();
         std::uniform_int_distribution dist(min, max);
         return dist(gen);
     }
-    static long long getLong(long long min, long long max) {
+    static long long getLong(long long min = LLONG_MIN, long long max = LLONG_MAX) {
         init();
         std::uniform_int_distribution dist(min, max);
         return dist(gen);
     }
-    static double getDouble(double min, double max) {
+    static double getDouble(double min = DBL_MIN, double max = DBL_MAX) {
         init();
         std::uniform_real_distribution dist(min, max);
         return dist(gen);
     }
-    static float getFloat(float min, float max) {
+    static float getFloat(float min = FLT_MIN, float max = FLT_MAX) {
         init();
         std::uniform_real_distribution dist(min, max);
         return dist(gen);
